@@ -591,8 +591,7 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 1,
-              "triggerAtMinute": 33
+              "triggerAtHour": 19
             }
           ]
         }
@@ -670,7 +669,7 @@
           "value": "#n8n-backup-notifications",
           "mode": "name"
         },
-        "text": "=:information_source:  Starting Workflow Backup [{{ $execution.id }}]",
+        "text": "=:information_source:  Starting Workflow Backup [{{ $now }}]",
         "otherOptions": {
           "includeLinkToWorkflow": false
         }
@@ -2688,6 +2687,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-07-25T05:29:31.000Z",
-  "versionId": "85ac492e-2e21-475d-ba36-e42fe1115bdd"
+  "updatedAt": "2025-07-25T06:39:11.000Z",
+  "versionId": "0f691dec-bf0d-474c-898b-5fb9c36be904"
 }
