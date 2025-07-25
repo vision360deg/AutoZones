@@ -1,0 +1,262 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image": {
+      "main": [
+        [
+          {
+            "node": "Upload image to Cloudinary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Generate Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload image to Cloudinary": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram post container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Instagram post container": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram post container1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-24T02:05:30.296Z",
+  "id": "PgpgIV63GUe71YOh",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "🌴🏖️☀️  Bastimento Content - AI Instagram Auto-Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": "={{ 6 }}"
+            }
+          ]
+        }
+      },
+      "id": "990d2c8b-cced-48b9-a210-8c41145cd000",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json.message.content }} - Caribbean islands in Boca del Toro, Panama. High quality, vibrant colors, tropical paradise, Instagram-worthy photography style ",
+        "model": "dall-e-3",
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "3c1414f0-a4b9-4217-a7dc-e7efed57af5c",
+      "name": "Generate Image",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        768,
+        304
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "o4-mini",
+          "mode": "list",
+          "cachedResultName": "O4-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a creative Instagram content creator. Generate engaging Instagram posts with captions that include 5-10 relevant hashtags.",
+              "role": "system"
+            },
+            {
+              "content": "Generate engaging Instagram content about the Caribbean islands in Boca del Toro, Panama. Focus on one specific aspect from this list: pristine beaches, crystal clear waters, tropical wildlife, Ngäbe indigenous culture, sustainable tourism, water sports, coral reefs, mangrove forests, or local cuisine."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        368,
+        304
+      ],
+      "id": "5a5cf9a1-38be-48a4-a473-8a8628629234",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/dkoqy2tdr/image/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "upload_preset",
+              "value": "my_preset"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        992,
+        304
+      ],
+      "id": "3caeed24-61c0-4ae4-86b0-11abd18e1437",
+      "name": "Upload image to Cloudinary"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "17841454156644322",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.secure_url }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $('Message a model').item.json.message.content }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "829be1ea-7572-45cf-818c-c749286fa0ea",
+      "name": "Create Instagram post container",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        304
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "zYDVjmHR5bH5STlq",
+          "name": "Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "17841454156644322",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "8d3b1618-8eaa-4588-87bd-27b9c3185680",
+      "name": "Create Instagram post container1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        304
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "zYDVjmHR5bH5STlq",
+          "name": "Facebook Graph API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-25T01:24:45.000Z",
+  "versionId": "35b7f7f2-40e2-4bf6-a6b8-af527cf0fa9f"
+}
