@@ -1,0 +1,149 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image": {
+      "main": [
+        [
+          {
+            "node": "Post to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Generate Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-23T04:00:49.624Z",
+  "id": "GZ4JgJw0S1fFzNe8",
+  "isArchived": true,
+  "meta": null,
+  "name": "AI Instagram Auto-Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "f1d2e3a4-b5c6-7d8e-9f0a-123456789abc",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "Create a vibrant Instagram-style image about motivation and success. High quality, modern design, inspiring colors.",
+        "model": "dall-e-3",
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "b2c3d4e5-f6g7-8h9i-0j1k-bcdef1234567",
+      "name": "Generate Image",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        720,
+        304
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d4e5f6g7-h8i9-0j1k-2l3m-def123456789",
+      "name": "Post to Instagram",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "o4-mini",
+          "mode": "list",
+          "cachedResultName": "O4-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a creative Instagram content creator. Generate engaging Instagram posts with captions that include relevant hashtags.",
+              "role": "system"
+            },
+            {
+              "content": "Create an Instagram caption with 5-10 hashtags about motivation, tech, or lifestyle."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        272,
+        304
+      ],
+      "id": "5190cac4-b7ed-4daf-838c-85c4a8633f5a",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-23T04:18:38.000Z",
+  "versionId": "0dd1e043-524c-4f8d-9b71-399781132ba8"
+}
