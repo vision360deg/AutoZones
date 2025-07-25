@@ -1,0 +1,256 @@
+{
+  "active": false,
+  "connections": {
+    "Daily Schedule": {
+      "main": [
+        [
+          {
+            "node": "Caribbean Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caribbean Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Content Structure Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Structure Parser": {
+      "main": [
+        [
+          {
+            "node": "Caribbean Image Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Caribbean Image Generator": {
+      "main": [
+        [
+          {
+            "node": "Instagram Publisher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Publisher": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Caribbean Content Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-23T03:42:32.606Z",
+  "id": "LEecPhSlc4kvoRRU",
+  "isArchived": true,
+  "meta": null,
+  "name": "Caribbean Islands Boca del Toro Instagram Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 9 * * 1,3,5"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        0,
+        -32
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate engaging Instagram content about the Caribbean islands in Boca del Toro, Panama. Focus on one specific aspect from this list: pristine beaches, crystal clear waters, tropical wildlife, Ngäbe indigenous culture, sustainable tourism, water sports, coral reefs, mangrove forests, or local cuisine.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a travel content creator specializing in Caribbean destinations. Create engaging Instagram content about the beautiful Caribbean islands in Boca del Toro, Panama.\n\nContent should include:\n- Captivating description of one specific attraction or experience\n- 2-3 relevant hashtags including #BocaDelToro #CaribbeanParadise #Panama\n- A call to action encouraging engagement\n- Keep it under 150 words\n- Use emojis appropriately\n- Focus on authentic, sustainable tourism\n\nTopics to rotate through:\n- Pristine beaches and crystal clear waters\n- Tropical wildlife (sloths, red frogs, dolphins)\n- Ngäbe indigenous culture and traditions\n- Sustainable eco-tourism activities\n- Water sports (surfing, snorkeling, kayaking)\n- Vibrant coral reefs and marine life\n- Lush mangrove forests\n- Local Caribbean cuisine and flavors\n- Hidden gems and secret spots\n- Conservation efforts\n\nGenerate content that inspires wanderlust while promoting responsible tourism."
+            }
+          ]
+        }
+      },
+      "id": "content-generator",
+      "name": "Caribbean Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        224,
+        -32
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"caption\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"Instagram caption with hashtags and emojis\"\n\t\t},\n\t\t\"image_prompt\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"Detailed prompt for AI image generation\"\n\t\t}\n\t}\n}"
+      },
+      "id": "content-parser",
+      "name": "Content Structure Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        624,
+        -24
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json.output.image_prompt }} - Caribbean islands in Boca del Toro, Panama. High quality, vibrant colors, tropical paradise, Instagram-worthy photography style",
+        "options": {
+          "size": "1024x1024",
+          "style": "vivid",
+          "returnImageUrls": true
+        }
+      },
+      "id": "image-generator",
+      "name": "Caribbean Image Generator",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        832,
+        -32
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "YOUR_INSTAGRAM_BUSINESS_ACCOUNT_ID",
+        "edge": "media",
+        "options": {}
+      },
+      "id": "instagram-publisher",
+      "name": "Instagram Publisher",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "position": [
+        1056,
+        -32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}"
+            },
+            {
+              "name": "status",
+              "value": "success"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('Content Structure Parser').item.json.output.caption }}"
+            },
+            {
+              "name": "instagram_post_id",
+              "value": "={{ $('Instagram Publisher').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "log-success",
+      "name": "Log Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1280,
+        -32
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "o4-mini",
+          "mode": "list",
+          "cachedResultName": "o4-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        176
+      ],
+      "id": "2fed46af-24c6-4c45-8f74-f2ee219e734b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "VptRouvlIXYLu3E8",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-25T01:08:35.000Z",
+  "versionId": "cd5b8562-0c17-435d-b1e4-7849188d7188"
+}
