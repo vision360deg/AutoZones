@@ -1,0 +1,115 @@
+{
+  "active": false,
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-02-08T19:49:29.435Z",
+  "id": "NAwFkLWf7Y9kGopq",
+  "isArchived": false,
+  "meta": null,
+  "name": "Notion Telegram Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "18f7adf0-ea02-4056-8a5a-589847ce39f1",
+      "name": "Telegram Trigger",
+      "webhookId": "2ea60c60-ad5a-4b14-ad9c-8bf5601622a3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "00375d73-3733-4973-9f04-bca063e19308",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data\nconst url = $('Telegram Trigger').first().json.message.text\n\n// Helper to extract via regex\nfunction grab(tag, attr) {\n  const regex = new RegExp(`<${tag}[^>]*${attr}=[\"']([^\"']+)[\"'][^>]*>`, \"i\");\n  const match = html.match(regex);\n  return match ? match[1] : null;\n}\n\nfunction grabMeta(property) {\n  const regex = new RegExp(`<meta[^>]*(name|property)=[\"']${property}[\"'][^>]*content=[\"']([^\"']+)[\"'][^>]*>`, \"i\");\n  const match = html.match(regex);\n  return match ? match[2] : null;\n}\n\n// Extract metadata\nconst title = grab(\"title\", \"\");\nconst ogTitle = grabMeta(\"og:title\") || title;\n\n// Return structured metadata\nreturn [\n  {\n    json: {\n      url,\n      title: ogTitle || title || \"No Title Found\",\n      date_added: new Date().toISOString()\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "c48696b4-c0c3-458e-bf8a-fd302c161ce7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "2a5cec8f-db7f-8002-9589-d4cc8fe5025d",
+          "mode": "list",
+          "cachedResultName": "Stuff to Read",
+          "cachedResultUrl": "https://www.notion.so/2a5cec8fdb7f80029589d4cc8fe5025d"
+        },
+        "title": "={{ $json.title }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Title|title",
+              "title": "={{ $json.title }}"
+            },
+            {
+              "key": "url|url",
+              "urlValue": "={{ $json.url }}"
+            },
+            {
+              "key": "date|date",
+              "date": "2025-11-08T18:20:55",
+              "timezone": "Asia/Kolkata"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "da3566df-e906-4f0b-9885-e95e910c0596",
+      "name": "Create a database page"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-08T20:31:52.000Z",
+  "versionId": "af08dc94-43f2-401c-a806-a38b81097dd3"
+}
