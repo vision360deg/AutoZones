@@ -85,7 +85,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "My workflow",
+  "name": "Notion knowledge base assistant",
   "nodes": [
     {
       "parameters": {
@@ -139,11 +139,13 @@
     {
       "parameters": {
         "resource": "database",
-        "operation": "search",
-        "text": "=",
-        "returnAll": true,
-        "simple": false,
-        "options": {}
+        "databaseId": {
+          "__rl": true,
+          "value": "51188182-97cc-8246-ba3d-01aa0f687198",
+          "mode": "list",
+          "cachedResultName": "Company Knowledge Base",
+          "cachedResultUrl": "https://www.notion.so/5118818297cc8246ba3d01aa0f687198"
+        }
       },
       "id": "81f2bc98-d3b4-49fb-9591-5e275382f1ff",
       "name": "Get database details",
@@ -367,6 +369,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-02-08T20:41:30.140Z",
-  "versionId": "a1e7e386-3c63-4f60-b493-af802c49817b"
+  "updatedAt": "2026-02-13T08:59:48.000Z",
+  "versionId": "f65e3cbd-6289-40c9-9879-c9e0117699ec"
 }
