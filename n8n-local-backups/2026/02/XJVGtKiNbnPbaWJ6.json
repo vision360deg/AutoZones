@@ -1,0 +1,89 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-02-12T20:43:51.343Z",
+  "id": "XJVGtKiNbnPbaWJ6",
+  "isArchived": false,
+  "meta": null,
+  "name": "Notion to Telegram integration (Intraverse)",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "30588182-97cc-807b-88fb-c77fdad32db8",
+          "mode": "list",
+          "cachedResultName": "Contacts DB",
+          "cachedResultUrl": "https://www.notion.so/3058818297cc807b88fbc77fdad32db8"
+        },
+        "returnAll": true,
+        "filterType": "json",
+        "filterJson": "{\n   \"and\":[\n      {\n         \"property\":\"Status\",\n         \"status\":{\n            \"equals\":\"Reach out\"\n         }\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Email Address\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            },\n            {\n               \"property\":\"Telegram\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            }\n         ]\n      }\n   ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "duU6PCGqoAZT3rRu",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 11
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-13T13:46:14.000Z",
+  "versionId": "2abdef58-00a2-4299-96ae-26397c029d91"
+}
