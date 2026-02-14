@@ -11,12 +11,41 @@
           }
         ]
       ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "✅ Send Completion Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Send Completion Message": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-02-12T20:43:51.343Z",
   "id": "XJVGtKiNbnPbaWJ6",
   "isArchived": false,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Notion to Telegram integration (Intraverse)",
   "nodes": [
     {
@@ -72,6 +101,108 @@
       ],
       "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## ✅ COMPLETION NOTIFICATION\nSends confirmation message back to Telegram user after successful processing",
+        "height": 380,
+        "width": 300,
+        "color": 5
+      },
+      "id": "ed2914e9-a4e4-4289-a5aa-e4c9e6bdbfc4",
+      "name": "Completion Description",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "1067261171",
+        "text": "=Please reach out to *{{ $json.name }}* via {{ $json.property_telegram }} or {{ $json.property_email_address }}. Let me know once you do so I can update the CRM in Notion. Thank you!!! 😊 ",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Done ✅",
+                    "additionalFields": {
+                      "callback_data": "={{ $json.id }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "367245fb-9854-4830-85ba-f464d038baee",
+      "name": "✅ Send Completion Message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        448,
+        0
+      ],
+      "webhookId": "5cf134ee-b78d-4603-bb13-a88ff5f42f7b",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.result.reply_markup.inline_keyboard[0][0].callback_data }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        336
+      ],
+      "id": "2500c8b5-7265-4380-b5e5-9a5e4c36dabf",
+      "name": "Answer Query a callback",
+      "webhookId": "abec6ad4-d0fc-42a8-9073-20c95b4a742c",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "inline_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        336
+      ],
+      "id": "fb9ae229-bde7-4ed7-a1d6-366995080a92",
+      "name": "Telegram Trigger",
+      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -84,6 +215,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-02-13T13:46:14.000Z",
-  "versionId": "2abdef58-00a2-4299-96ae-26397c029d91"
+  "updatedAt": "2026-02-14T18:39:23.000Z",
+  "versionId": "c236d3f8-2a31-4974-962e-aaa4b71c456e"
 }
