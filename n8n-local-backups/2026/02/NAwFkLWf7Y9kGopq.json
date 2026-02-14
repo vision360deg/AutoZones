@@ -34,7 +34,13 @@
       ],
       "id": "18f7adf0-ea02-4056-8a5a-589847ce39f1",
       "name": "Telegram Trigger",
-      "webhookId": "2ea60c60-ad5a-4b14-ad9c-8bf5601622a3"
+      "webhookId": "2ea60c60-ad5a-4b14-ad9c-8bf5601622a3",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
     },
     {
       "parameters": {},
@@ -110,6 +116,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-02-08T20:31:52.000Z",
-  "versionId": "af08dc94-43f2-401c-a806-a38b81097dd3"
+  "updatedAt": "2026-02-14T17:57:16.000Z",
+  "versionId": "324744fb-a07e-4225-ae28-2552964037e0"
 }
