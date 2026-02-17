@@ -1,0 +1,302 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Search Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Search Queries": {
+      "main": [
+        [
+          {
+            "node": "Check LinkedIn Method",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check LinkedIn Method": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn API Search",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Smooth.sh Browser Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn API Search": {
+      "main": [
+        [
+          {
+            "node": "Normalize API Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Smooth.sh Browser Agent": {
+      "main": [
+        [
+          {
+            "node": "Normalize Browser Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize API Results": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Browser Results": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate Investors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-02-16T14:42:25.331Z",
+  "id": "yf9kbrPUUGYLHXct",
+  "isArchived": false,
+  "meta": null,
+  "name": "SW2-LinkedIn-Scrape",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "trigger-sw2",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all()[0].json;\nconst profile = input.founder_profile;\n\nif (!profile || !profile.search_keywords) {\n  return [{ json: { status: 'error', error: 'No founder_profile or search_keywords provided', investors: [] } }];\n}\n\nconst investorTypeQueries = ['venture capital', 'angel investor', 'syndicate', 'VC partner', 'managing partner VC'];\nconst industryQueries = profile.industry_tags || [];\nconst stageQueries = profile.funding_stage ? [profile.funding_stage.replace('_', ' ')] : [];\nconst geoQueries = profile.geo_preferences || [];\n\nconst searchQueries = [];\nfor (const investorType of investorTypeQueries) {\n  for (const industry of industryQueries.slice(0, 3)) {\n    const query = `${investorType} ${industry}`;\n    searchQueries.push(query);\n    for (const geo of geoQueries.slice(0, 2)) {\n      searchQueries.push(`${query} ${geo}`);\n    }\n  }\n}\n\nconst connectionDegrees = ['F', 'S', 'O'];\n\nreturn [{\n  json: {\n    founder_profile: profile,\n    search_queries: [...new Set(searchQueries)].slice(0, 20),\n    connection_degrees: connectionDegrees,\n    linkedin_method: profile.linkedin_credentials?.method || 'automation',\n    linkedin_token: profile.linkedin_credentials?.token || ''\n  }\n}];\n"
+      },
+      "id": "build-search",
+      "name": "Build Search Queries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "is-api",
+              "leftValue": "={{ $json.linkedin_method }}",
+              "rightValue": "api",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-method",
+      "name": "Check LinkedIn Method",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        304
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/search/blended",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={{ JSON.stringify({ keywords: $json.search_queries[0], count: 50, origin: 'GLOBAL_SEARCH_HEADER' }) }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify({ 'X-Restli-Protocol-Version': '2.0.0', 'LinkedIn-Version': '202401' }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "linkedin-api",
+      "name": "LinkedIn API Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        208
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.smooth.sh/api/v1/task",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ task: 'Search LinkedIn for investors matching these criteria and return structured results', context: { search_queries: $json.search_queries, connection_degrees: $json.connection_degrees, linkedin_token: $json.linkedin_token }, steps: [ 'Navigate to LinkedIn search', 'For each search query, search People filter by connection degree (1st, 2nd, 3rd)', 'For each result extract: name, title, company, connection_degree, profile_url', 'Classify investor_type based on title: VC if contains venture/VC/partner, Angel if contains angel/individual, Syndicate if contains syndicate', 'Return all results as JSON array' ], output_format: { investors: [{ name: 'string', title: 'string', company: 'string', connection_degree: '1st|2nd|3rd', profile_url: 'string', investor_type: 'VC|Angel|Syndicate' }] } }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "browser-agent",
+      "name": "Smooth.sh Browser Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        400
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yDVGj7rzOnO6qQtF",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.all()[0].json;\n\nconst investors = [];\nconst elements = response?.elements || response?.data?.elements || [];\n\nfor (const el of elements) {\n  const title = (el.title?.text || el.headline || '').toLowerCase();\n  let investorType = 'Unknown';\n  if (title.includes('venture') || title.includes('vc') || title.includes('partner')) investorType = 'VC';\n  else if (title.includes('angel')) investorType = 'Angel';\n  else if (title.includes('syndicate')) investorType = 'Syndicate';\n  else continue;\n\n  investors.push({\n    name: el.title?.text || el.name || 'Unknown',\n    title: el.headline || el.title?.text || '',\n    company: el.subline?.text || el.company || '',\n    connection_degree: el.connectionDegree || el.distance || '3rd',\n    profile_url: el.navigationUrl || el.publicProfileUrl || '',\n    investor_type: investorType\n  });\n}\n\nreturn [{ json: { status: 'success', investors, count: investors.length } }];\n"
+      },
+      "id": "normalize-api",
+      "name": "Normalize API Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.all()[0].json;\n\nlet investors = [];\nif (response?.investors && Array.isArray(response.investors)) {\n  investors = response.investors;\n} else if (response?.result?.investors && Array.isArray(response.result.investors)) {\n  investors = response.result.investors;\n} else if (response?.data?.investors && Array.isArray(response.data.investors)) {\n  investors = response.data.investors;\n}\n\nconst normalized = investors.map(inv => ({\n  name: inv.name || 'Unknown',\n  title: inv.title || '',\n  company: inv.company || '',\n  connection_degree: inv.connection_degree || '3rd',\n  profile_url: inv.profile_url || '',\n  investor_type: inv.investor_type || 'Unknown'\n}));\n\nreturn [{ json: { status: 'success', investors: normalized, count: normalized.length } }];\n"
+      },
+      "id": "normalize-browser",
+      "name": "Normalize Browser Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "input1"
+      },
+      "id": "merge-results",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1360,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet allInvestors = [];\n\nfor (const item of items) {\n  if (item.json.investors && Array.isArray(item.json.investors)) {\n    allInvestors = allInvestors.concat(item.json.investors);\n  }\n}\n\nconst seen = new Map();\nfor (const inv of allInvestors) {\n  const key = (inv.profile_url || `${inv.name}_${inv.company}`).toLowerCase();\n  if (!seen.has(key)) {\n    seen.set(key, inv);\n  }\n}\n\nconst deduplicated = Array.from(seen.values());\n\nreturn [{ json: { status: 'success', investors: deduplicated, count: deduplicated.length } }];\n"
+      },
+      "id": "dedup-investors",
+      "name": "Deduplicate Investors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-16T19:00:06.000Z",
+  "versionId": "33f77547-f08b-4b75-9960-6fc7fc7dd3ea"
+}
