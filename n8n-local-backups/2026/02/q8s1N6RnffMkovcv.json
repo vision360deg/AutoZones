@@ -1,0 +1,164 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Investor Iteration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Investor Iteration": {
+      "main": [
+        [
+          {
+            "node": "Scrape Investor Connections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Investor Connections": {
+      "main": [
+        [
+          {
+            "node": "Process Connections Per Investor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Connections Per Investor": {
+      "main": [
+        [
+          {
+            "node": "Aggregate and Rank Founders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-02-16T14:42:49.411Z",
+  "id": "q8s1N6RnffMkovcv",
+  "isArchived": false,
+  "meta": null,
+  "name": "SW3-Connected-Founders",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "trigger-sw3",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all()[0].json;\nconst investors = input.investors || [];\nconst founderProfile = input.founder_profile || {};\n\nif (!investors.length) {\n  return [{ json: { status: 'error', error: 'No investors provided', connected_founders: [] } }];\n}\n\nreturn investors.map(inv => ({\n  json: {\n    investor: inv,\n    founder_profile: founderProfile\n  }\n}));\n"
+      },
+      "id": "prepare-iteration",
+      "name": "Prepare Investor Iteration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.smooth.sh/v1/browser/execute",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ task: 'Find startup founders connected to this investor on LinkedIn', context: { investor_profile_url: $json.investor.profile_url, investor_name: $json.investor.name, filter_titles: ['Founder', 'Co-Founder', 'Co-founder', 'CEO', 'Chief Executive Officer'] }, steps: [ 'Navigate to investor profile connections page', 'Filter connections by title keywords: Founder, Co-Founder, CEO', 'Extract up to 50 founder connections with: name, title, company, profile_url', 'Return structured JSON array' ], output_format: { founders: [{ name: 'string', title: 'string', company: 'string', profile_url: 'string' }] } }) }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 5000
+            }
+          },
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "id": "scrape-connections",
+      "name": "Scrape Investor Connections",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        304
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "yDVGj7rzOnO6qQtF",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $json;\nconst investorName = $input.item.json?.investor?.name || 'Unknown';\n\nlet founders = [];\nif (response?.founders) founders = response.founders;\nelse if (response?.result?.founders) founders = response.result.founders;\nelse if (response?.data?.founders) founders = response.data.founders;\n\nreturn {\n  json: {\n    investor_name: investorName,\n    found_founders: (founders || []).map(f => ({\n      name: f.name || 'Unknown',\n      title: f.title || '',\n      company: f.company || '',\n      profile_url: f.profile_url || '',\n      connected_via_investor: investorName\n    }))\n  }\n};\n"
+      },
+      "id": "process-connections",
+      "name": "Process Connections Per Investor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst founderMap = new Map();\n\nfor (const item of items) {\n  const investorName = item.json.investor_name;\n  const founders = item.json.found_founders || [];\n\n  for (const f of founders) {\n    const key = (f.profile_url || `${f.name}_${f.company}`).toLowerCase();\n\n    if (founderMap.has(key)) {\n      const existing = founderMap.get(key);\n      if (!existing.connected_investors.includes(investorName)) {\n        existing.connected_investors.push(investorName);\n        existing.mutual_connections_count = existing.connected_investors.length;\n      }\n    } else {\n      founderMap.set(key, {\n        name: f.name,\n        title: f.title,\n        company: f.company,\n        profile_url: f.profile_url,\n        connected_investors: [investorName],\n        mutual_connections_count: 1\n      });\n    }\n  }\n}\n\nconst sortedFounders = Array.from(founderMap.values())\n  .sort((a, b) => b.mutual_connections_count - a.mutual_connections_count);\n\nreturn [{\n  json: {\n    status: 'success',\n    connected_founders: sortedFounders,\n    count: sortedFounders.length\n  }\n}];\n"
+      },
+      "id": "aggregate-founders",
+      "name": "Aggregate and Rank Founders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-16T18:59:48.000Z",
+  "versionId": "ef1fe90e-dfa8-4c9a-857a-8b8660666e68"
+}
