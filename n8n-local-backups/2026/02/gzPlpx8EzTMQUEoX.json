@@ -1,0 +1,825 @@
+{
+  "active": false,
+  "connections": {
+    "Founder Survey Form": {
+      "main": [
+        [
+          {
+            "node": "Map Form to Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Form to Schema": {
+      "main": [
+        [
+          {
+            "node": "SW1 Founder Onboarding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SW1 Founder Onboarding": {
+      "main": [
+        [
+          {
+            "node": "Check SW1 Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check SW1 Result": {
+      "main": [
+        [
+          {
+            "node": "Prepare SW2 Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SW1 Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SW2 Input": {
+      "main": [
+        [
+          {
+            "node": "SW2 LinkedIn Scrape",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SW2 LinkedIn Scrape": {
+      "main": [
+        [
+          {
+            "node": "Check SW2 Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check SW2 Result": {
+      "main": [
+        [
+          {
+            "node": "Prepare SW3 Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SW2 Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SW3 Input": {
+      "main": [
+        [
+          {
+            "node": "SW3 Connected Founders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SW3 Connected Founders": {
+      "main": [
+        [
+          {
+            "node": "Check SW3 Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check SW3 Result": {
+      "main": [
+        [
+          {
+            "node": "Prepare SW4 Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SW3 Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SW4 Input": {
+      "main": [
+        [
+          {
+            "node": "SW4 Event Discovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SW4 Event Discovery": {
+      "main": [
+        [
+          {
+            "node": "Check SW4 Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check SW4 Result": {
+      "main": [
+        [
+          {
+            "node": "Prepare SW5 Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SW4 Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SW5 Input": {
+      "main": [
+        [
+          {
+            "node": "SW5 Event Recommendation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SW5 Event Recommendation": {
+      "main": [
+        [
+          {
+            "node": "Build Final Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-02-16T14:44:47.385Z",
+  "id": "gzPlpx8EzTMQUEoX",
+  "isArchived": false,
+  "meta": null,
+  "name": "Main-Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Startup Founder Investor Matching",
+        "formDescription": "Complete this survey to find your ideal investor matches, discover connected founders, and get personalized event recommendations.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "Jane Doe",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Industry / Vertical",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "SaaS"
+                  },
+                  {
+                    "option": "FinTech"
+                  },
+                  {
+                    "option": "HealthTech"
+                  },
+                  {
+                    "option": "EdTech"
+                  },
+                  {
+                    "option": "E-Commerce"
+                  },
+                  {
+                    "option": "AI / Machine Learning"
+                  },
+                  {
+                    "option": "CleanTech"
+                  },
+                  {
+                    "option": "DeepTech"
+                  },
+                  {
+                    "option": "FoodTech"
+                  },
+                  {
+                    "option": "PropTech"
+                  },
+                  {
+                    "option": "Other"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Funding Stage",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Pre-Seed"
+                  },
+                  {
+                    "option": "Seed"
+                  },
+                  {
+                    "option": "Series A"
+                  },
+                  {
+                    "option": "Series B"
+                  },
+                  {
+                    "option": "Series C+"
+                  },
+                  {
+                    "option": "Growth"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Funding Amount Needed (USD)",
+              "placeholder": "e.g. 500000",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Geographic Preferences",
+              "placeholder": "e.g. San Francisco, London, Berlin"
+            },
+            {
+              "fieldLabel": "Your Location",
+              "placeholder": "e.g. Milan, Italy",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Founder Background",
+              "fieldType": "textarea",
+              "placeholder": "Brief background: education, previous ventures, domain expertise..."
+            },
+            {
+              "fieldLabel": "Startup Description",
+              "fieldType": "textarea",
+              "placeholder": "What does your startup do? What problem does it solve?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Traction Metrics",
+              "fieldType": "textarea",
+              "placeholder": "MRR, users, growth rate, partnerships..."
+            },
+            {
+              "fieldLabel": "LinkedIn Access Method",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "api"
+                  },
+                  {
+                    "option": "automation"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "LinkedIn Token or Cookie",
+              "fieldType": "password",
+              "placeholder": "Your LinkedIn API token or session cookie",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Event Types",
+              "placeholder": "e.g. pitch competition, demo day, networking, conference"
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "form-trigger",
+      "name": "Founder Survey Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        288
+      ],
+      "webhookId": "174ce9b4-759a-46bc-a338-9b5fc3a2b9cc"
+    },
+    {
+      "parameters": {
+        "jsCode": "const f = $input.all()[0].json;\nreturn [{\n  json: {\n    founder_id: `founder_${Date.now()}`,\n    full_name: f['Full Name'] || '',\n    industry_vertical: f['Industry / Vertical'] || '',\n    funding_stage: f['Funding Stage'] || '',\n    funding_amount_needed: f['Funding Amount Needed (USD)'] || '0',\n    geographic_preferences: f['Geographic Preferences'] || '',\n    location: f['Your Location'] || '',\n    founder_background: f['Founder Background'] || '',\n    startup_description: f['Startup Description'] || '',\n    traction_metrics: f['Traction Metrics'] || '',\n    linkedin_access_method: f['LinkedIn Access Method'] || 'automation',\n    linkedin_token: f['LinkedIn Token or Cookie'] || '',\n    preferred_event_types: f['Preferred Event Types'] || ''\n  }\n}];\n"
+      },
+      "id": "map-form-data",
+      "name": "Map Form to Schema",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Zi4tNsXCuK6E4e8t",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "call-sw1",
+      "name": "SW1 Founder Onboarding",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "sw1-ok",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-sw1",
+      "name": "Check SW1 Result",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $input.all()[0].json;\nreturn [{ json: { pipeline_status: 'failed', failed_at: 'SW1-Founder-Onboarding', error: err.error || 'Unknown error in SW1', timestamp: new Date().toISOString() } }];\n"
+      },
+      "id": "sw1-error",
+      "name": "SW1 Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sw1 = $input.all()[0].json;\nreturn [{ json: { founder_profile: sw1.founder_profile } }];\n"
+      },
+      "id": "prepare-sw2",
+      "name": "Prepare SW2 Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "yf9kbrPUUGYLHXct",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "call-sw2",
+      "name": "SW2 LinkedIn Scrape",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1376,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "sw2-ok",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-sw2",
+      "name": "Check SW2 Result",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        176
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $input.all()[0].json;\nreturn [{ json: { pipeline_status: 'failed', failed_at: 'SW2-LinkedIn-Scrape', error: err.error || 'Unknown error in SW2', timestamp: new Date().toISOString() } }];\n"
+      },
+      "id": "sw2-error",
+      "name": "SW2 Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sw2 = $input.all()[0].json;\nconst sw1 = $('Check SW1 Result').all()[0]?.json || {};\nreturn [{ json: { investors: sw2.investors || [], founder_profile: sw1.founder_profile || {} } }];\n"
+      },
+      "id": "prepare-sw3",
+      "name": "Prepare SW3 Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "q8s1N6RnffMkovcv",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "call-sw3",
+      "name": "SW3 Connected Founders",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2048,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "sw3-ok",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-sw3",
+      "name": "Check SW3 Result",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2272,
+        80
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $input.all()[0].json;\nreturn [{ json: { pipeline_status: 'failed', failed_at: 'SW3-Connected-Founders', error: err.error || 'Unknown error in SW3', timestamp: new Date().toISOString() } }];\n"
+      },
+      "id": "sw3-error",
+      "name": "SW3 Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sw3 = $input.all()[0].json;\nconst sw1 = $('Check SW1 Result').all()[0]?.json || {};\nconst sw2 = $('Check SW2 Result').all()[0]?.json || {};\nreturn [{ json: { investors: sw2.investors || [], connected_founders: sw3.connected_founders || [], founder_profile: sw1.founder_profile || {} } }];\n"
+      },
+      "id": "prepare-sw4",
+      "name": "Prepare SW4 Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "zYCRl8koljXHPIvT",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "call-sw4",
+      "name": "SW4 Event Discovery",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "sw4-ok",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-sw4",
+      "name": "Check SW4 Result",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2944,
+        -16
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $input.all()[0].json;\nreturn [{ json: { pipeline_status: 'failed', failed_at: 'SW4-Event-Discovery', error: err.error || 'Unknown error in SW4', timestamp: new Date().toISOString() } }];\n"
+      },
+      "id": "sw4-error",
+      "name": "SW4 Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sw4 = $input.all()[0].json;\nconst sw1 = $('Check SW1 Result').all()[0]?.json || {};\nreturn [{ json: { events: sw4.events || [], founder_profile: sw1.founder_profile || {} } }];\n"
+      },
+      "id": "prepare-sw5",
+      "name": "Prepare SW5 Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "XL7Jbh1BHqDfcoOZ",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "call-sw5",
+      "name": "SW5 Event Recommendation",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3392,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sw5 = $input.all()[0].json;\nconst sw1 = $('Check SW1 Result').all()[0]?.json || {};\nconst sw2 = $('Check SW2 Result').all()[0]?.json || {};\nconst sw3 = $('Check SW3 Result').all()[0]?.json || {};\nconst sw4 = $('Check SW4 Result').all()[0]?.json || {};\n\nreturn [{\n  json: {\n    pipeline_status: 'success',\n    founder_profile: sw1.founder_profile || {},\n    investors_found: (sw2.investors || []).length,\n    connected_founders_found: (sw3.connected_founders || []).length,\n    events_discovered: (sw4.events || []).length,\n    weekly_recommendations: sw5.weekly_recommendations || [],\n    total_recommended_events: sw5.total_recommended || 0,\n    summary: {\n      top_investors: (sw2.investors || []).slice(0, 5).map(i => `${i.name} (${i.investor_type}, ${i.connection_degree})`),\n      top_connected_founders: (sw3.connected_founders || []).slice(0, 5).map(f => `${f.name} - ${f.mutual_connections_count} mutual connections`),\n      next_recommended_events: (sw5.weekly_recommendations || []).slice(0, 2).flatMap(w => w.events.map(e => `${e.event_name} on ${e.date} at ${e.location}`))\n    },\n    timestamp: new Date().toISOString()\n  }\n}];\n"
+      },
+      "id": "final-output",
+      "name": "Build Final Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3616,
+        -96
+      ]
+    }
+  ],
+  "pinData": {
+    "SW1 Founder Onboarding": [
+      {
+        "json": {
+          "status": "success",
+          "founder_profile": {
+            "founder_id": "founder_1771255554612",
+            "industry_tags": [
+              "healthtech"
+            ],
+            "funding_stage": "pre_seed",
+            "funding_amount_needed": 100000,
+            "geo_preferences": [
+              "UK"
+            ],
+            "background": "Medicine Doctor",
+            "startup_description": "We use AI to manage appointments for doctor's practices",
+            "traction_metrics": "users",
+            "linkedin_credentials": {
+              "method": "automation",
+              "token": "cmzr-VxhipRjMgWI9CIZAoYPKir_xP6uzJeJ2hB8UC_s7u_Ak8-TFVVHHsIBw1q21cLQwVLWdqaQAxdAVCXl1-mX3NkBBcouUqUk_l7zSo2YtmmC4uxpCQH0wktT7"
+            },
+            "location": "London",
+            "preferred_event_types": [
+              "networking"
+            ],
+            "search_keywords": [
+              "healthtech",
+              "pre_seed",
+              "investor",
+              "venture capital",
+              "angel investor",
+              "startup",
+              "manage",
+              "appointments",
+              "doctor's",
+              "practices"
+            ]
+          },
+          "survey_qna": [
+            {
+              "question": "Industry / Vertical",
+              "answer": "HealthTech"
+            },
+            {
+              "question": "Funding Stage",
+              "answer": "Pre-Seed"
+            },
+            {
+              "question": "Funding Amount Needed",
+              "answer": "100000"
+            },
+            {
+              "question": "Geographic Preferences",
+              "answer": "UK"
+            },
+            {
+              "question": "Founder Background",
+              "answer": "Medicine Doctor"
+            },
+            {
+              "question": "Startup Description",
+              "answer": "We use AI to manage appointments for doctor's practices"
+            },
+            {
+              "question": "Traction Metrics",
+              "answer": "users"
+            },
+            {
+              "question": "LinkedIn Access Method",
+              "answer": "api"
+            },
+            {
+              "question": "LinkedIn Token",
+              "answer": "***REDACTED***"
+            },
+            {
+              "question": "Location",
+              "answer": "London"
+            },
+            {
+              "question": "Preferred Event Types",
+              "answer": "networking"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-16T18:59:57.000Z",
+  "versionId": "60b21d58-fcb6-42ac-912e-2bddcb62ef54"
+}
