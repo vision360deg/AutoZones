@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "🌐 Upload to ImgBB": {
       "main": [
@@ -616,6 +618,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-14T17:35:02.091Z",
+      "createdAt": "2026-02-14T17:35:02.091Z",
+      "role": "workflow:owner",
+      "workflowId": "GSNK6xzjvRSBlCJ2",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
