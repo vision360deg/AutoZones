@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Format schema": {
       "main": [
@@ -366,6 +368,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-08T20:41:30.150Z",
+      "createdAt": "2026-02-08T20:41:30.150Z",
+      "role": "workflow:owner",
+      "workflowId": "tauJd7BzjCfRgpl4",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
