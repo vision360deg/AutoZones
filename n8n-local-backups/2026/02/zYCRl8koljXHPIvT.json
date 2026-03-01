@@ -1,5 +1,159 @@
 {
-  "active": false,
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-02-16T15:59:39.209Z",
+    "createdAt": "2026-02-16T15:59:39.209Z",
+    "versionId": "92dd47b8-cd36-4e2c-a904-52042fc9d565",
+    "workflowId": "zYCRl8koljXHPIvT",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "trigger-sw4",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          256,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.all()[0].json;\nconst profile = input.founder_profile || {};\nconst investors = input.investors || [];\nconst connectedFounders = input.connected_founders || [];\n\nconst networkProfiles = [\n  ...investors.map(i => ({ name: i.name, profile_url: i.profile_url, type: 'investor' })),\n  ...connectedFounders.map(f => ({ name: f.name, profile_url: f.profile_url, type: 'founder' }))\n];\n\nconst eventKeywords = [\n  ...(profile.industry_tags || []),\n  ...(profile.preferred_event_types || []),\n  profile.funding_stage ? profile.funding_stage.replace('_', ' ') : '',\n  'startup',\n  'venture capital',\n  'pitch',\n  'demo day',\n  'networking'\n].filter(Boolean);\n\nconst locations = profile.geo_preferences || [profile.location].filter(Boolean);\n\nreturn [{\n  json: {\n    event_keywords: [...new Set(eventKeywords)],\n    locations: locations,\n    network_profiles: networkProfiles,\n    founder_profile: profile,\n    sources: ['linkedin_events', 'eventbrite', 'meetup']\n  }\n}];\n"
+        },
+        "id": "build-event-queries",
+        "name": "Build Event Search Filters",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.all()[0].json;\nreturn input.sources.map(source => ({\n  json: {\n    source: source,\n    event_keywords: input.event_keywords,\n    locations: input.locations,\n    network_profiles: input.network_profiles,\n    founder_profile: input.founder_profile\n  }\n}));\n"
+        },
+        "id": "split-sources",
+        "name": "Split By Source",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.smooth.sh/v1/browser/execute",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ task: 'Search for startup/investor events on ' + $json.source, context: { source: $json.source, keywords: $json.event_keywords, locations: $json.locations, date_range: { from: new Date().toISOString().split('T')[0], to: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] } }, steps: [ 'Navigate to ' + ($json.source === 'linkedin_events' ? 'LinkedIn Events search' : $json.source === 'eventbrite' ? 'Eventbrite.com' : 'Meetup.com'), 'Search using provided keywords and location filters', 'Extract event details: name, date, location, url, description, attendee list if available', 'Return up to 30 events as structured JSON' ], output_format: { events: [{ event_name: 'string', date: 'ISO date string', location: 'string', url: 'string', description: 'string', attendees: ['string'], source: 'string' }] } }) }}",
+          "options": {
+            "batching": {
+              "batch": {
+                "batchSize": 1,
+                "batchInterval": 3000
+              }
+            },
+            "response": {
+              "response": {
+                "neverError": true,
+                "responseFormat": "json"
+              }
+            },
+            "timeout": 90000
+          }
+        },
+        "id": "fetch-events",
+        "name": "Fetch Events From Source",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          912,
+          304
+        ],
+        "retryOnFail": true,
+        "maxTries": 2,
+        "waitBetweenTries": 3000,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "yDVGj7rzOnO6qQtF",
+            "name": "Header Auth account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst allEvents = [];\n\nfor (const item of items) {\n  const response = item.json;\n  let events = response?.events || response?.result?.events || response?.data?.events || [];\n  allEvents.push(...events);\n}\n\nconst firstItem = $input.first();\nconst networkProfiles = firstItem?.json?.network_profiles || [];\nconst founderProfile = firstItem?.json?.founder_profile || {};\nconst networkNames = new Set(networkProfiles.map(p => p.name.toLowerCase()));\nconst industryTags = new Set((founderProfile.industry_tags || []).map(t => t.toLowerCase()));\nconst eventTypes = new Set((founderProfile.preferred_event_types || []).map(t => t.toLowerCase()));\n\nconst seen = new Set();\nconst scoredEvents = [];\n\nfor (const evt of allEvents) {\n  const key = `${(evt.event_name || '').toLowerCase()}_${evt.date}`;\n  if (seen.has(key)) continue;\n  seen.add(key);\n\n  const attendees = (evt.attendees || []).map(a => a.toLowerCase());\n  const attendeesFromNetwork = attendees.filter(a => {\n    for (const name of networkNames) {\n      if (a.includes(name) || name.includes(a)) return true;\n    }\n    return false;\n  });\n\n  const desc = ((evt.description || '') + ' ' + (evt.event_name || '')).toLowerCase();\n  let relevancyScore = 0;\n  for (const tag of industryTags) { if (desc.includes(tag)) relevancyScore += 2; }\n  for (const et of eventTypes) { if (desc.includes(et)) relevancyScore += 3; }\n  if (desc.includes('startup')) relevancyScore += 1;\n  if (desc.includes('investor') || desc.includes('pitch') || desc.includes('demo day')) relevancyScore += 2;\n\n  const connectionScore = attendeesFromNetwork.length * 5;\n\n  scoredEvents.push({\n    event_name: evt.event_name || 'Unknown Event',\n    date: evt.date || '',\n    location: evt.location || '',\n    url: evt.url || '',\n    attendees_from_network: attendeesFromNetwork,\n    relevancy_score: relevancyScore,\n    connection_score: connectionScore,\n    combined_score: relevancyScore + connectionScore,\n    source: evt.source || ''\n  });\n}\n\nscoredEvents.sort((a, b) => b.combined_score - a.combined_score);\n\nreturn [{\n  json: {\n    status: 'success',\n    events: scoredEvents,\n    count: scoredEvents.length\n  }\n}];\n"
+        },
+        "id": "score-events",
+        "name": "Score and Rank Events",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1136,
+          304
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build Event Search Filters",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Event Search Filters": {
+        "main": [
+          [
+            {
+              "node": "Split By Source",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split By Source": {
+        "main": [
+          [
+            {
+              "node": "Fetch Events From Source",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fetch Events From Source": {
+        "main": [
+          [
+            {
+              "node": "Score and Rank Events",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Bob Marley",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "activeVersionId": "92dd47b8-cd36-4e2c-a904-52042fc9d565",
   "connections": {
     "Execute Workflow Trigger": {
       "main": [
@@ -155,6 +309,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-16T14:43:22.127Z",
+      "createdAt": "2026-02-16T14:43:22.127Z",
+      "role": "workflow:owner",
+      "workflowId": "zYCRl8koljXHPIvT",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
