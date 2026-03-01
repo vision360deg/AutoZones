@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Founder Survey Form": {
       "main": [
@@ -817,6 +819,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-16T14:44:47.391Z",
+      "createdAt": "2026-02-16T14:44:47.391Z",
+      "role": "workflow:owner",
+      "workflowId": "gzPlpx8EzTMQUEoX",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
