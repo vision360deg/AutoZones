@@ -1,5 +1,146 @@
 {
-  "active": false,
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-02-16T14:52:33.511Z",
+    "createdAt": "2026-02-16T14:52:33.511Z",
+    "versionId": "2f46f9a6-22c4-4159-8c18-8145dde87f7e",
+    "workflowId": "Zi4tNsXCuK6E4e8t",
+    "nodes": [
+      {
+        "id": "trigger-sw1",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          250,
+          300
+        ],
+        "parameters": {
+          "inputSource": "passthrough"
+        }
+      },
+      {
+        "id": "validate-input",
+        "name": "Validate Survey Input",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          470,
+          300
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "check-industry",
+                "leftValue": "={{ $json.industry_vertical }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "check-stage",
+                "leftValue": "={{ $json.funding_stage }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "check-location",
+                "leftValue": "={{ $json.location }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ]
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "id": "error-missing-fields",
+        "name": "Error Missing Fields",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          690,
+          450
+        ],
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "return [{ json: { status: 'error', error: 'Missing required survey fields: industry_vertical, funding_stage, and location are mandatory', founder_profile: null, survey_qna: null } }];"
+        }
+      },
+      {
+        "id": "build-profile",
+        "name": "Build Founder Profile",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          690,
+          200
+        ],
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const input = $input.all()[0].json;\n\nconst industryTags = (input.industry_vertical || '').split(',').map(t => t.trim().toLowerCase()).filter(Boolean);\n\nconst stageMap = {\n  'pre-seed': 'pre_seed',\n  'preseed': 'pre_seed',\n  'seed': 'seed',\n  'series a': 'series_a',\n  'series b': 'series_b',\n  'series c+': 'series_c_plus',\n  'growth': 'growth'\n};\nconst normalizedStage = stageMap[(input.funding_stage || '').toLowerCase()] || input.funding_stage;\n\nconst fundingAmount = parseFloat((input.funding_amount_needed || '0').toString().replace(/[^0-9.]/g, ''));\n\nconst geoPrefs = (input.geographic_preferences || input.location || '').split(',').map(g => g.trim()).filter(Boolean);\n\nconst eventTypes = (input.preferred_event_types || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);\n\nconst searchKeywords = [\n  ...industryTags,\n  normalizedStage,\n  'investor',\n  'venture capital',\n  'angel investor',\n  'startup',\n  ...(input.startup_description || '').split(' ').filter(w => w.length > 5).slice(0, 5).map(w => w.toLowerCase())\n].filter(Boolean);\n\nconst surveyQna = [\n  { question: 'Industry / Vertical', answer: input.industry_vertical || '' },\n  { question: 'Funding Stage', answer: input.funding_stage || '' },\n  { question: 'Funding Amount Needed', answer: input.funding_amount_needed || '' },\n  { question: 'Geographic Preferences', answer: input.geographic_preferences || '' },\n  { question: 'Founder Background', answer: input.founder_background || '' },\n  { question: 'Startup Description', answer: input.startup_description || '' },\n  { question: 'Traction Metrics', answer: input.traction_metrics || '' },\n  { question: 'LinkedIn Access Method', answer: input.linkedin_access_method || '' },\n  { question: 'LinkedIn Token', answer: '***REDACTED***' },\n  { question: 'Location', answer: input.location || '' },\n  { question: 'Preferred Event Types', answer: input.preferred_event_types || '' }\n];\n\nconst founderProfile = {\n  founder_id: input.founder_id || `founder_${Date.now()}`,\n  industry_tags: industryTags,\n  funding_stage: normalizedStage,\n  funding_amount_needed: fundingAmount,\n  geo_preferences: geoPrefs,\n  background: input.founder_background || '',\n  startup_description: input.startup_description || '',\n  traction_metrics: input.traction_metrics || '',\n  linkedin_credentials: {\n    method: input.linkedin_access_method || 'automation',\n    token: input.linkedin_token || ''\n  },\n  location: input.location || '',\n  preferred_event_types: eventTypes,\n  search_keywords: [...new Set(searchKeywords)]\n};\n\nreturn [{\n  json: {\n    status: 'success',\n    founder_profile: founderProfile,\n    survey_qna: surveyQna\n  }\n}];"
+        }
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Validate Survey Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Survey Input": {
+        "main": [
+          [
+            {
+              "node": "Build Founder Profile",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Error Missing Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Bob Marley",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "activeVersionId": "2f46f9a6-22c4-4159-8c18-8145dde87f7e",
   "connections": {
     "Execute Workflow Trigger": {
       "main": [
@@ -142,6 +283,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-16T14:41:48.307Z",
+      "createdAt": "2026-02-16T14:41:48.307Z",
+      "role": "workflow:owner",
+      "workflowId": "Zi4tNsXCuK6E4e8t",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
