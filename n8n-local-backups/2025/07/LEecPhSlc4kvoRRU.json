@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Daily Schedule": {
       "main": [
@@ -248,6 +250,15 @@
   "repo_owner": "vision360deg",
   "repo_path": "n8n-local-backups",
   "settings": {},
+  "shared": [
+    {
+      "updatedAt": "2025-07-23T03:42:32.612Z",
+      "createdAt": "2025-07-23T03:42:32.612Z",
+      "role": "workflow:owner",
+      "workflowId": "LEecPhSlc4kvoRRU",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
