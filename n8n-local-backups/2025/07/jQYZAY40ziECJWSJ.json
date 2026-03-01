@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Manual Trigger": {
       "main": [
@@ -98,6 +100,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2025-07-23T23:47:09.226Z",
+      "createdAt": "2025-07-23T23:47:09.226Z",
+      "role": "workflow:owner",
+      "workflowId": "jQYZAY40ziECJWSJ",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
