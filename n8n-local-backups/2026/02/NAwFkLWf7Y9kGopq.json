@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Code in JavaScript": {
       "main": [
@@ -113,6 +115,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2026-02-08T19:49:29.472Z",
+      "createdAt": "2026-02-08T19:49:29.472Z",
+      "role": "workflow:owner",
+      "workflowId": "NAwFkLWf7Y9kGopq",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
