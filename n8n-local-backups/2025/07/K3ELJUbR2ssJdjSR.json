@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Loop Over Items": {
       "main": [
@@ -1393,6 +1395,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2025-07-23T06:09:55.174Z",
+      "createdAt": "2025-07-23T06:09:55.174Z",
+      "role": "workflow:owner",
+      "workflowId": "K3ELJUbR2ssJdjSR",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
