@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "n8n": {
       "main": [
@@ -290,7 +292,8 @@
         848,
         320
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "disabled": true
     },
     {
       "parameters": {
@@ -603,7 +606,8 @@
         848,
         528
       ],
-      "typeVersion": 1.2
+      "typeVersion": 1.2,
+      "disabled": true
     },
     {
       "parameters": {
@@ -949,9 +953,18 @@
   "repo_owner": "vision360deg",
   "repo_path": "n8n-local-backups",
   "settings": {},
+  "shared": [
+    {
+      "updatedAt": "2025-07-25T04:51:40.253Z",
+      "createdAt": "2025-07-25T04:51:40.253Z",
+      "role": "workflow:owner",
+      "workflowId": "SZhNJiXkfKPsPdQH",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-02-16T19:01:35.000Z",
-  "versionId": "f197bf02-94c5-40e6-ae19-d046e6f256a6"
+  "versionId": "a598f6c6-82b9-4fbd-8bbd-dcc2f90dd3a3"
 }
