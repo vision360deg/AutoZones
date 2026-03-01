@@ -1,22 +1,382 @@
 {
-  "active": false,
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-01T18:45:19.000Z",
+    "createdAt": "2026-03-01T18:28:53.572Z",
+    "versionId": "6a4eeab3-88e1-4018-8c30-93ba1ec3f05b",
+    "workflowId": "XJVGtKiNbnPbaWJ6",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9,
+                "triggerAtMinute": 30
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          -16
+        ],
+        "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "content": "## ✅ COMPLETION NOTIFICATION\nSends confirmation message back to Telegram user after successful processing",
+          "height": 380,
+          "width": 300,
+          "color": 5
+        },
+        "id": "ed2914e9-a4e4-4289-a5aa-e4c9e6bdbfc4",
+        "name": "Completion Description",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          832,
+          -192
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "chatId": "1067261171",
+          "text": "=Task \"{{ $json.name }}\" for *{{ $('Get many database pages - Contacts').item.json.name }}*.\nContact before {{ $json.property_due_date.start }} via {{ $('Get many database pages - Contacts').item.json.property_telegram }} or {{ $('Get many database pages - Contacts').item.json.property_email_address }}",
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "Done ✅",
+                      "additionalFields": {
+                        "callback_data": "={{ $json.id }}"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "id": "367245fb-9854-4830-85ba-f464d038baee",
+        "name": "✅ Send Completion Message",
+        "type": "n8n-nodes-base.telegram",
+        "position": [
+          928,
+          -16
+        ],
+        "webhookId": "5cf134ee-b78d-4603-bb13-a88ff5f42f7b",
+        "typeVersion": 1.2,
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "callback_query"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          208
+        ],
+        "id": "fb9ae229-bde7-4ed7-a1d6-366995080a92",
+        "name": "Telegram Trigger",
+        "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "9eaddc8c-3e73-48d6-9371-7008e08aca48",
+                "leftValue": "={{ $json.property_sample_db_tasks }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          448,
+          -16
+        ],
+        "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "getAll",
+          "databaseId": {
+            "__rl": true,
+            "value": "30aa2115-0821-8076-9c54-f727b74cce38",
+            "mode": "list",
+            "cachedResultName": "Sample DB Tasks",
+            "cachedResultUrl": "https://www.notion.so/30aa2115082180769c54f727b74cce38"
+          },
+          "returnAll": true,
+          "filterType": "manual",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "key": "Contact|relation",
+                "condition": "contains",
+                "relationValue": "={{ $json.id }}"
+              },
+              {
+                "key": "Due Date|date",
+                "condition": "next_week"
+              },
+              {
+                "key": "Checkbox|checkbox",
+                "condition": "does_not_equal",
+                "checkboxValue": true
+              }
+            ]
+          },
+          "options": {
+            "sort": {
+              "sortValue": [
+                {
+                  "key": "Due Date|date",
+                  "direction": "ascending"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          672,
+          -16
+        ],
+        "id": "f1c19919-6b7a-4b56-a6be-b008bbb27ad6",
+        "name": "Get many database pages - Associated Tasks",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "getAll",
+          "databaseId": {
+            "__rl": true,
+            "value": "305a2115-0821-81b6-94bd-cc522610a7c4",
+            "mode": "list",
+            "cachedResultName": "COPIA | Contacts DB",
+            "cachedResultUrl": "https://www.notion.so/305a2115082181b694bdcc522610a7c4"
+          },
+          "returnAll": true,
+          "filterType": "json",
+          "filterJson": "{\n   \"and\":[\n      {\n         \"and\":[\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Archive\"\n                }\n            },\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Discarded\"\n                }\n            }\n         ]\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Email Address\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            },\n            {\n               \"property\":\"Telegram\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            }\n         ]\n      }\n   ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          224,
+          -16
+        ],
+        "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
+        "name": "Get many database pages - Contacts",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "update",
+          "pageId": {
+            "__rl": true,
+            "value": "={{ $json.callback_query.data }}",
+            "mode": "id"
+          },
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "Checkbox|checkbox",
+                "checkboxValue": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          224,
+          208
+        ],
+        "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
+        "name": "Update a database page",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "resource": "callback",
+          "queryId": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
+          "additionalFields": {
+            "cache_time": 600,
+            "show_alert": true,
+            "text": "=✅ {{ $('Telegram Trigger').item.json.callback_query.message.text }}"
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          448,
+          208
+        ],
+        "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
+        "name": "Answer Query a callback",
+        "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get many database pages - Contacts",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "✅ Send Completion Message": {
+        "main": [
+          []
+        ]
+      },
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Update a database page",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Get many database pages - Associated Tasks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many database pages - Associated Tasks": {
+        "main": [
+          [
+            {
+              "node": "✅ Send Completion Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many database pages - Contacts": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update a database page": {
+        "main": [
+          [
+            {
+              "node": "Answer Query a callback",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Bob Marley",
+    "name": "Staging Version 6a4eeab3",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "6a4eeab3-88e1-4018-8c30-93ba1ec3f05b",
   "connections": {
     "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Get many database pages",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get many database pages": {
-      "main": [
-        [
-          {
-            "node": "✅ Send Completion Message",
+            "node": "Get many database pages - Contacts",
             "type": "main",
             "index": 0
           }
@@ -29,6 +389,50 @@
       ]
     },
     "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages - Associated Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages - Associated Tasks": {
+      "main": [
+        [
+          {
+            "node": "✅ Send Completion Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages - Contacts": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a database page": {
       "main": [
         [
           {
@@ -50,45 +454,11 @@
   "nodes": [
     {
       "parameters": {
-        "resource": "databasePage",
-        "operation": "getAll",
-        "databaseId": {
-          "__rl": true,
-          "value": "30588182-97cc-807b-88fb-c77fdad32db8",
-          "mode": "list",
-          "cachedResultName": "Contacts DB",
-          "cachedResultUrl": "https://www.notion.so/3058818297cc807b88fbc77fdad32db8"
-        },
-        "returnAll": true,
-        "filterType": "json",
-        "filterJson": "{\n   \"and\":[\n      {\n         \"property\":\"Status\",\n         \"status\":{\n            \"equals\":\"Reach out\"\n         }\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Email Address\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            },\n            {\n               \"property\":\"Telegram\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            }\n         ]\n      }\n   ]\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        224,
-        0
-      ],
-      "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
-      "name": "Get many database pages",
-      "credentials": {
-        "notionApi": {
-          "id": "duU6PCGqoAZT3rRu",
-          "name": "Notion account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "rule": {
           "interval": [
             {
-              "field": "weeks",
-              "triggerAtDay": [
-                1
-              ],
-              "triggerAtHour": 11
+              "triggerAtHour": 9,
+              "triggerAtMinute": 30
             }
           ]
         }
@@ -97,7 +467,7 @@
       "typeVersion": 1.2,
       "position": [
         0,
-        0
+        -16
       ],
       "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
       "name": "Schedule Trigger"
@@ -113,15 +483,15 @@
       "name": "Completion Description",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        368,
-        -160
+        832,
+        -192
       ],
       "typeVersion": 1
     },
     {
       "parameters": {
         "chatId": "1067261171",
-        "text": "=Please reach out to *{{ $json.name }}* via {{ $json.property_telegram }} or {{ $json.property_email_address }}. Let me know once you do so I can update the CRM in Notion. Thank you!!! 😊 ",
+        "text": "=Task \"{{ $json.name }}\" for *{{ $('Get many database pages - Contacts').item.json.name }}*.\nContact before {{ $json.property_due_date.start }} via {{ $('Get many database pages - Contacts').item.json.property_telegram }} or {{ $('Get many database pages - Contacts').item.json.property_email_address }}",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -147,8 +517,8 @@
       "name": "✅ Send Completion Message",
       "type": "n8n-nodes-base.telegram",
       "position": [
-        448,
-        0
+        928,
+        -16
       ],
       "webhookId": "5cf134ee-b78d-4603-bb13-a88ff5f42f7b",
       "typeVersion": 1.2,
@@ -161,19 +531,20 @@
     },
     {
       "parameters": {
-        "resource": "callback",
-        "queryId": "={{ $json.result.reply_markup.inline_keyboard[0][0].callback_data }}",
+        "updates": [
+          "callback_query"
+        ],
         "additionalFields": {}
       },
-      "type": "n8n-nodes-base.telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        208,
-        336
+        0,
+        208
       ],
-      "id": "2500c8b5-7265-4380-b5e5-9a5e4c36dabf",
-      "name": "Answer Query a callback",
-      "webhookId": "abec6ad4-d0fc-42a8-9073-20c95b4a742c",
+      "id": "fb9ae229-bde7-4ed7-a1d6-366995080a92",
+      "name": "Telegram Trigger",
+      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
       "credentials": {
         "telegramApi": {
           "id": "SsOUtBCoIt6hfvPf",
@@ -183,20 +554,182 @@
     },
     {
       "parameters": {
-        "updates": [
-          "inline_query"
-        ],
-        "additionalFields": {}
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9eaddc8c-3e73-48d6-9371-7008e08aca48",
+              "leftValue": "={{ $json.property_sample_db_tasks }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.telegramTrigger",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        -16
+      ],
+      "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "30aa2115-0821-8076-9c54-f727b74cce38",
+          "mode": "list",
+          "cachedResultName": "Sample DB Tasks",
+          "cachedResultUrl": "https://www.notion.so/30aa2115082180769c54f727b74cce38"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Contact|relation",
+              "condition": "contains",
+              "relationValue": "={{ $json.id }}"
+            },
+            {
+              "key": "Due Date|date",
+              "condition": "next_week"
+            },
+            {
+              "key": "Checkbox|checkbox",
+              "condition": "does_not_equal",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "key": "Due Date|date",
+                "direction": "ascending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "f1c19919-6b7a-4b56-a6be-b008bbb27ad6",
+      "name": "Get many database pages - Associated Tasks",
+      "credentials": {
+        "notionApi": {
+          "id": "T5TCf8kuWTqoaGFA",
+          "name": "Notion account (Intraverse - Test)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "305a2115-0821-81b6-94bd-cc522610a7c4",
+          "mode": "list",
+          "cachedResultName": "COPIA | Contacts DB",
+          "cachedResultUrl": "https://www.notion.so/305a2115082181b694bdcc522610a7c4"
+        },
+        "returnAll": true,
+        "filterType": "json",
+        "filterJson": "{\n   \"and\":[\n      {\n         \"and\":[\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Archive\"\n                }\n            },\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Discarded\"\n                }\n            }\n         ]\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Email Address\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            },\n            {\n               \"property\":\"Telegram\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            }\n         ]\n      }\n   ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
+      "name": "Get many database pages - Contacts",
+      "credentials": {
+        "notionApi": {
+          "id": "T5TCf8kuWTqoaGFA",
+          "name": "Notion account (Intraverse - Test)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.callback_query.data }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Checkbox|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        208
+      ],
+      "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
+      "name": "Update a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "T5TCf8kuWTqoaGFA",
+          "name": "Notion account (Intraverse - Test)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
+        "additionalFields": {
+          "cache_time": 600,
+          "show_alert": true,
+          "text": "=✅ {{ $('Telegram Trigger').item.json.callback_query.message.text }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        0,
-        336
+        448,
+        208
       ],
-      "id": "fb9ae229-bde7-4ed7-a1d6-366995080a92",
-      "name": "Telegram Trigger",
-      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+      "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
+      "name": "Answer Query a callback",
+      "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
       "credentials": {
         "telegramApi": {
           "id": "SsOUtBCoIt6hfvPf",
@@ -212,9 +745,22 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "shared": [
+    {
+      "updatedAt": "2026-02-12T20:43:51.353Z",
+      "createdAt": "2026-02-12T20:43:51.353Z",
+      "role": "workflow:owner",
+      "workflowId": "XJVGtKiNbnPbaWJ6",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2026-02-16T19:00:49.000Z",
-  "versionId": "c236d3f8-2a31-4974-962e-aaa4b71c456e"
+  "triggerCount": 2,
+  "updatedAt": "2026-03-01T18:28:53.571Z",
+  "versionId": "6a4eeab3-88e1-4018-8c30-93ba1ec3f05b"
 }
