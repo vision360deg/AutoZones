@@ -1,5 +1,7 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -250,6 +252,15 @@
   "settings": {
     "executionOrder": "v1"
   },
+  "shared": [
+    {
+      "updatedAt": "2025-07-23T04:12:55.292Z",
+      "createdAt": "2025-07-23T04:12:55.292Z",
+      "role": "workflow:owner",
+      "workflowId": "S8FqXsmAIzLId8oz",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": []
