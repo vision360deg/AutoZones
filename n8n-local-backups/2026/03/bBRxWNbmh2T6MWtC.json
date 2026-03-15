@@ -1,0 +1,89 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-15T20:59:38.227Z",
+  "id": "bBRxWNbmh2T6MWtC",
+  "isArchived": true,
+  "meta": null,
+  "name": "Send Telegram Message Sub-workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id  }}",
+        "text": "=*{{ $json.name }}*\n[Notion Page]({{ $json.url }})\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1136,
+        448
+      ],
+      "id": "ee1ab9ca-bfe0-46fe-9247-400d23b99b05",
+      "name": "Send a text message",
+      "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "8169fa39-b334-4420-ab3b-14a5a3d8b7a7",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        928,
+        448
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "AutoZones",
+  "repo_owner": "vision360deg",
+  "repo_path": "n8n-local-backups",
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-15T20:59:38.236Z",
+      "createdAt": "2026-03-15T20:59:38.236Z",
+      "role": "workflow:owner",
+      "workflowId": "bBRxWNbmh2T6MWtC",
+      "projectId": "IdNdHtHTW9KtZk9n"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-15T21:07:01.000Z",
+  "versionId": "637607cc-82b1-45f3-88b7-7802ef5a295a"
+}
