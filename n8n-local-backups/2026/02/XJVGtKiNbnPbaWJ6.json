@@ -1,7 +1,1000 @@
 {
-  "active": false,
-  "activeVersion": null,
-  "activeVersionId": null,
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-15T23:42:30.000Z",
+    "createdAt": "2026-03-15T23:42:25.764Z",
+    "versionId": "029ff667-7268-4ca2-aee3-e3378ab499a8",
+    "workflowId": "XJVGtKiNbnPbaWJ6",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 8
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -160,
+          -96
+        ],
+        "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "content": "## ✅ COMPLETION NOTIFICATION\nSends confirmation message back to Telegram user after successful processing",
+          "height": 380,
+          "width": 300,
+          "color": 5
+        },
+        "id": "ed2914e9-a4e4-4289-a5aa-e4c9e6bdbfc4",
+        "name": "Completion Description",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          634,
+          -316
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "9eaddc8c-3e73-48d6-9371-7008e08aca48",
+                "leftValue": "={{ $json.property_sample_db_tasks }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "array",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          288,
+          -96
+        ],
+        "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "getAll",
+          "databaseId": {
+            "__rl": true,
+            "value": "30aa2115-0821-8076-9c54-f727b74cce38",
+            "mode": "list",
+            "cachedResultName": "Sample DB Tasks",
+            "cachedResultUrl": "https://www.notion.so/30aa2115082180769c54f727b74cce38"
+          },
+          "returnAll": true,
+          "filterType": "json",
+          "filterJson": "={\n   \"and\":[\n      {\n         \"property\":\"Contact\",\n         \"relation\":{\n            \"contains\":\"{{ $json.id }}\"\n         }\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Due Date\",\n               \"date\":{\n                  \"on_or_before\":\"{{ $today }}\"\n               }\n            },\n            {\n               \"property\":\"Due Date\",\n               \"date\":{\n                  \"next_week\":{\n                     \n                  }\n               }\n            }\n         ]\n      },\n      {\n         \"property\":\"Checkbox\",\n         \"checkbox\":{\n            \"equals\":false\n         }\n      }\n   ]\n}",
+          "options": {
+            "sort": {
+              "sortValue": [
+                {
+                  "key": "Due Date|date",
+                  "direction": "ascending"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          512,
+          -96
+        ],
+        "id": "f1c19919-6b7a-4b56-a6be-b008bbb27ad6",
+        "name": "Get many database pages - Associated Tasks",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "getAll",
+          "databaseId": {
+            "__rl": true,
+            "value": "305a2115-0821-81b6-94bd-cc522610a7c4",
+            "mode": "list",
+            "cachedResultName": "COPIA | Contacts DB",
+            "cachedResultUrl": "https://www.notion.so/305a2115082181b694bdcc522610a7c4"
+          },
+          "returnAll": true,
+          "filterType": "json",
+          "filterJson": "{\n   \"and\":[\n      {\n         \"and\":[\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Archive\"\n                }\n            },\n            {\n               \"property\":\"Status\",\n               \"status\":{\n                   \"does_not_equal\":\"Discarded\"\n                }\n            }\n         ]\n      },\n      {\n         \"or\":[\n            {\n               \"property\":\"Email Address\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            },\n            {\n               \"property\":\"Telegram\",\n               \"rich_text\":{\n                  \"is_not_empty\":true\n               }\n            }\n         ]\n      }\n   ]\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          64,
+          -96
+        ],
+        "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
+        "name": "Get many database pages - Contacts",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "callback",
+          "queryId": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
+          "additionalFields": {
+            "cache_time": 600,
+            "show_alert": true,
+            "text": "=✅ {{ $('Telegram Trigger').item.json.callback_query.message.text }}"
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          736,
+          1088
+        ],
+        "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
+        "name": "Answer Query a callback",
+        "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "GET_STATUS",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "9ce2dc9d-8e41-4153-837d-9ccf39acba70"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": " GET_STATUS"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "a378425d-811c-47a0-8a07-d29c833f9aec",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "SET_STATUS",
+                      "operator": {
+                        "type": "string",
+                        "operation": "startsWith"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "SET_STATUS"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "4c99df93-2d00-4649-b536-abc83e9e0bb8",
+                      "leftValue": "={{ $json.type }}",
+                      "rightValue": "SET_TASK_DONE",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "SET_TASK_DONE"
+              }
+            ]
+          },
+          "looseTypeValidation": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          288,
+          880
+        ],
+        "id": "8744953d-3844-4991-b218-66a384891424",
+        "name": "Switch Callback"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "c16e3890-7b6e-48d6-a6ba-1f7e17fd08a6",
+                      "leftValue": "={{ $('Get Contacts').all().length }}",
+                      "rightValue": 1,
+                      "operator": {
+                        "type": "number",
+                        "operation": "gt"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Too Many"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Slash Command').item.json.command }}",
+                      "rightValue": "status",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "5ab955b8-626e-49b4-b3a0-7041a968912e"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Get"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "91868e9c-1c19-475f-872c-a165113070d2",
+                      "leftValue": "={{ $('Parse Slash Command').item.json.command }}",
+                      "rightValue": "update",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Update"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          512,
+          304
+        ],
+        "id": "10ef4ecc-a6e2-4266-b292-68e640b0b4ab",
+        "name": "Switch Results"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "update",
+          "pageId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "simple": "={{ true }}",
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "Status|status",
+                "statusValue": "={{ $('Parse Slash Command').item.json.new_status }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          736,
+          512
+        ],
+        "id": "cf44f51a-565f-49e2-98ef-d1db01afbd59",
+        "name": "Update Contact Status",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "update",
+          "pageId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "Checkbox|checkbox",
+                "checkboxValue": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          512,
+          1088
+        ],
+        "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
+        "name": "Update Task Done",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "get",
+          "pageId": {
+            "__rl": true,
+            "value": "={{ $('Parse Callback Query').item.json.id }}",
+            "mode": "id"
+          }
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          512,
+          704
+        ],
+        "id": "1f9a0b79-5c48-4d93-98de-da1ecfa89556",
+        "name": "Get Contact Status",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const STATUS_RE = /^\\/status\\s+(.+?)\\s*$/;\nconst UPDATE_RE = /^\\/update\\s+(.+?)\\s+(\\S+)\\s*$/;\n\nfunction parseMessage(text) {\n  text = text.trim();\n\n  let m = text.match(STATUS_RE);\n  if (m) {\n    return {\n      command: \"status\",\n      contact_name: m[1].trim(),\n      new_status: null,\n    };\n  }\n\n  m = text.match(UPDATE_RE);\n  if (m) {\n    return {\n      command: \"update\",\n      contact_name: m[1].trim(),\n      new_status: m[2].trim(),\n    };\n  }\n\n  throw new Error(\"Invalid command format\");\n}\n\nconst inputMessage = $('Telegram Trigger').first().json.message.text;\nconst parsed = parseMessage(inputMessage);\n\nreturn [{ json: parsed }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          64,
+          320
+        ],
+        "id": "b7404c9d-e607-4658-86cf-fcff83e3d7b5",
+        "name": "Parse Slash Command",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "function parseInput(text) {\n  const input = text.trim();\n  const [kind, ...rest] = input.split(/\\s+/);\n  const command = kind.split(\"<\")[0];\n  const id_value = rest.join(\" \").trim();\n\n  switch (command) {\n    case \"GET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_TASK_DONE\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    default:\n      throw new Error(\"Invalid input. Expected 'SET_TASK_DONE <value>', 'GET_STATUS <value>', or 'SET_STATUS <value>'\");\n  }\n}\n\nconst inputText = $('Telegram Trigger').first().json.callback_query.data;\n\nconst parsed = parseInput(inputText);\n\nreturn [{ json: parsed }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          64,
+          896
+        ],
+        "id": "8dbb2bfa-b2fd-44de-84f7-36e8219d2751",
+        "name": "Parse Callback Query",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "getAll",
+          "databaseId": {
+            "__rl": true,
+            "value": "305a2115-0821-81b6-94bd-cc522610a7c4",
+            "mode": "list",
+            "cachedResultName": "COPIA | Contacts DB",
+            "cachedResultUrl": "https://www.notion.so/305a2115082181b694bdcc522610a7c4"
+          },
+          "returnAll": true,
+          "filterType": "manual",
+          "filters": {
+            "conditions": [
+              {
+                "key": "Name|title",
+                "condition": "contains",
+                "titleValue": "={{ $json.contact_name }}"
+              },
+              {
+                "key": "Telegram|url",
+                "condition": "contains",
+                "urlValue": "={{ $json.contact_name }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          288,
+          320
+        ],
+        "id": "dc7f3c43-687a-41ec-b892-5512e15e67c6",
+        "name": "Get Contacts",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "1067261171",
+          "text": "=Task \"{{ $json.name }}\" for *{{ $('Get many database pages - Contacts').item.json.name }}*.\nContact before {{ $json.property_due_date.start }} via {{ $('Get many database pages - Contacts').item.json.property_telegram }} or {{ $('Get many database pages - Contacts').item.json.property_email_address }}",
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "Done ✅",
+                      "additionalFields": {
+                        "callback_data": "=SET_TASK_DONE {{ $json.id }}"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "id": "367245fb-9854-4830-85ba-f464d038baee",
+        "name": "Send Completion Message",
+        "type": "n8n-nodes-base.telegram",
+        "position": [
+          736,
+          -96
+        ],
+        "webhookId": "5cf134ee-b78d-4603-bb13-a88ff5f42f7b",
+        "typeVersion": 1.2,
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst action = ({\n  status: \"GET_STATUS\",\n  update: \"SET_STATUS<\" + $('Parse Slash Command').first().json.new_status + \">\",\n})[$('Parse Slash Command').first().json.command];\n\nif (!action) throw new Error(\"Invalid command\");\n\nconst buttons = items.map((item) => ([\n  {\n    text: item.json.name,\n    callback_data: action + ' ' + String(item.json.id),\n  }\n]));\n\nreturn [{\n  json: {\n    chat_id: $('Telegram Trigger').first().json.message.chat.id,\n    text: \"Choose one:\",\n    reply_markup: {\n      inline_keyboard: buttons\n    }\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          736,
+          128
+        ],
+        "id": "ae9f6519-bc33-4bea-bbf6-180d5bab25eb",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.telegram.org/bot8365585954:AAF4PhXwWDfi1uOoFfSrq2yCnRdW6y9gQcI/sendMessage",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "chat_id",
+                "value": "={{ $json.chat_id }}"
+              },
+              {
+                "name": "text",
+                "value": "={{ $json.text }}"
+              },
+              {
+                "name": "reply_markup",
+                "value": "={{ $json.reply_markup }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.4,
+        "position": [
+          960,
+          128
+        ],
+        "id": "19c27e87-ab99-46bd-8b45-c1760d77355e",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          960,
+          512
+        ],
+        "id": "24a12ab3-bdae-4715-94df-e807a32611c1",
+        "name": "Send Updated Status",
+        "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          736,
+          320
+        ],
+        "id": "57f1c17a-c776-45df-906e-308aad6b6d5f",
+        "name": "Send Contact Status",
+        "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+          "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          960,
+          896
+        ],
+        "id": "075f7e7a-fc2e-4af2-b857-a10348894e94",
+        "name": "Send Updated Status1",
+        "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+          "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          736,
+          704
+        ],
+        "id": "6d998fad-9006-43b7-a310-70d01a30c03a",
+        "name": "Send Contact Status1",
+        "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.first().json;\n\nconst command = input.type.split(\"<\")[0];\nconst new_status = input.type.split(\"<\")[1].replace(/>$/, \"\");\nconst id = input.id;\n\nreturn [\n  {\n    json: {\n      command: command,\n      id: id,\n      new_status: new_status,\n    },\n  },\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          512,
+          896
+        ],
+        "id": "873085d8-cef0-411c-aeef-5120afb0b64c",
+        "name": "Clean Set Status Input"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "update",
+          "pageId": {
+            "__rl": true,
+            "value": "={{ $('Parse Callback Query').item.json.id }}",
+            "mode": "id"
+          },
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "Status|status",
+                "statusValue": "={{ $json.new_status }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 2.2,
+        "position": [
+          736,
+          896
+        ],
+        "id": "ea71d294-32e3-44a3-844c-305dcb783acc",
+        "name": "Update Contact Status1",
+        "credentials": {
+          "notionApi": {
+            "id": "T5TCf8kuWTqoaGFA",
+            "name": "Notion account (Intraverse - Test)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "updates": [
+            "message",
+            "callback_query"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -160,
+          608
+        ],
+        "id": "ce1c962f-ed05-4d74-812d-23853fd3d9f1",
+        "name": "Telegram Trigger",
+        "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get many database pages - Contacts",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Get many database pages - Associated Tasks",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many database pages - Associated Tasks": {
+        "main": [
+          [
+            {
+              "node": "Send Completion Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many database pages - Contacts": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch Callback": {
+        "main": [
+          [
+            {
+              "node": "Get Contact Status",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Clean Set Status Input",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Update Task Done",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch Results": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Contact Status",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Update Contact Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Task Done": {
+        "main": [
+          [
+            {
+              "node": "Answer Query a callback",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Slash Command": {
+        "main": [
+          [
+            {
+              "node": "Get Contacts",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Callback Query": {
+        "main": [
+          [
+            {
+              "node": "Switch Callback",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Contacts": {
+        "main": [
+          [
+            {
+              "node": "Switch Results",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send Completion Message": {
+        "main": [
+          []
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Contact Status": {
+        "main": [
+          [
+            {
+              "node": "Send Contact Status1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Contact Status": {
+        "main": [
+          [
+            {
+              "node": "Send Updated Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Clean Set Status Input": {
+        "main": [
+          [
+            {
+              "node": "Update Contact Status1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Contact Status1": {
+        "main": [
+          [
+            {
+              "node": "Send Updated Status1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Parse Slash Command",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Parse Callback Query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Bob Marley",
+    "name": "Version 029ff667",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "029ff667-7268-4ca2-aee3-e3378ab499a8",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -47,17 +1040,6 @@
         ]
       ]
     },
-    "Telegram Contact Status Trigger": {
-      "main": [
-        [
-          {
-            "node": "Parse Slash Command",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch Callback": {
       "main": [
         [
@@ -69,7 +1051,7 @@
         ],
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "Clean Set Status Input",
             "type": "main",
             "index": 0
           }
@@ -190,33 +1172,38 @@
         ]
       ]
     },
-    "Telegram Callback Trigger": {
+    "Clean Set Status Input": {
       "main": [
         [
+          {
+            "node": "Update Contact Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Contact Status1": {
+      "main": [
+        [
+          {
+            "node": "Send Updated Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Slash Command",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Parse Callback Query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update Contact Status2": {
-      "main": [
-        [
-          {
-            "node": "Send a text message3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
-            "node": "Update Contact Status2",
             "type": "main",
             "index": 0
           }
@@ -230,15 +1217,14 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Notion to Telegram integration (Intraverse)",
+  "name": "Notion to Telegram",
   "nodes": [
     {
       "parameters": {
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 2
+              "triggerAtHour": 8
             }
           ]
         }
@@ -246,7 +1232,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -32,
+        -160,
         -96
       ],
       "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
@@ -263,7 +1249,7 @@
       "name": "Completion Description",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        762,
+        634,
         -316
       ],
       "typeVersion": 1
@@ -296,7 +1282,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        416,
+        288,
         -96
       ],
       "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
@@ -330,7 +1316,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        640,
+        512,
         -96
       ],
       "id": "f1c19919-6b7a-4b56-a6be-b008bbb27ad6",
@@ -362,7 +1348,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        192,
+        64,
         -96
       ],
       "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
@@ -377,45 +1363,22 @@
     {
       "parameters": {
         "resource": "callback",
-        "queryId": "={{ $('Telegram Callback Trigger').item.json.callback_query.id }}",
+        "queryId": "={{ $('Telegram Trigger').item.json.callback_query.id }}",
         "additionalFields": {
           "cache_time": 600,
           "show_alert": true,
-          "text": "=✅ {{ $('Telegram Callback Trigger').item.json.callback_query.message.text }}"
+          "text": "=✅ {{ $('Telegram Trigger').item.json.callback_query.message.text }}"
         }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        864,
-        1120
+        736,
+        1088
       ],
       "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
       "name": "Answer Query a callback",
       "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
-      "credentials": {
-        "telegramApi": {
-          "id": "SsOUtBCoIt6hfvPf",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "updates": [
-          "message"
-        ],
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -32,
-        320
-      ],
-      "id": "ce1c962f-ed05-4d74-812d-23853fd3d9f1",
-      "name": "Telegram Contact Status Trigger",
-      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
       "credentials": {
         "telegramApi": {
           "id": "SsOUtBCoIt6hfvPf",
@@ -507,8 +1470,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        416,
-        912
+        288,
+        880
       ],
       "id": "8744953d-3844-4991-b218-66a384891424",
       "name": "Switch Callback"
@@ -596,7 +1559,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        640,
+        512,
         304
       ],
       "id": "10ef4ecc-a6e2-4266-b292-68e640b0b4ab",
@@ -625,7 +1588,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        864,
+        736,
         512
       ],
       "id": "cf44f51a-565f-49e2-98ef-d1db01afbd59",
@@ -659,8 +1622,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        640,
-        1120
+        512,
+        1088
       ],
       "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
       "name": "Update Task Done",
@@ -685,8 +1648,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        640,
-        736
+        512,
+        704
       ],
       "id": "1f9a0b79-5c48-4d93-98de-da1ecfa89556",
       "name": "Get Contact Status",
@@ -699,29 +1662,31 @@
     },
     {
       "parameters": {
-        "jsCode": "const STATUS_RE = /^\\/status\\s+(.+?)\\s*$/;\nconst UPDATE_RE = /^\\/update\\s+(.+?)\\s+(\\S+)\\s*$/;\n\nfunction parseMessage(text) {\n  text = text.trim();\n\n  let m = text.match(STATUS_RE);\n  if (m) {\n    return {\n      command: \"status\",\n      contact_name: m[1].trim(),\n      new_status: null,\n    };\n  }\n\n  m = text.match(UPDATE_RE);\n  if (m) {\n    return {\n      command: \"update\",\n      contact_name: m[1].trim(),\n      new_status: m[2].trim(),\n    };\n  }\n\n  throw new Error(\"Invalid command format\");\n}\n\nconst inputMessage = $('Telegram Contact Status Trigger').first().json.message.text;\nconst parsed = parseMessage(inputMessage);\n\nreturn [{ json: parsed }];"
+        "jsCode": "const STATUS_RE = /^\\/status\\s+(.+?)\\s*$/;\nconst UPDATE_RE = /^\\/update\\s+(.+?)\\s+(\\S+)\\s*$/;\n\nfunction parseMessage(text) {\n  text = text.trim();\n\n  let m = text.match(STATUS_RE);\n  if (m) {\n    return {\n      command: \"status\",\n      contact_name: m[1].trim(),\n      new_status: null,\n    };\n  }\n\n  m = text.match(UPDATE_RE);\n  if (m) {\n    return {\n      command: \"update\",\n      contact_name: m[1].trim(),\n      new_status: m[2].trim(),\n    };\n  }\n\n  throw new Error(\"Invalid command format\");\n}\n\nconst inputMessage = $('Telegram Trigger').first().json.message.text;\nconst parsed = parseMessage(inputMessage);\n\nreturn [{ json: parsed }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        192,
+        64,
         320
       ],
       "id": "b7404c9d-e607-4658-86cf-fcff83e3d7b5",
-      "name": "Parse Slash Command"
+      "name": "Parse Slash Command",
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
-        "jsCode": "function parseInput(text) {\n  const input = text.trim();\n  const [kind, ...rest] = input.split(/\\s+/);\n  const command = kind.split(\"<\")[0];\n  const id_value = rest.join(\" \").trim();\n\n  switch (command) {\n    case \"GET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_TASK_DONE\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    default:\n      throw new Error(\"Invalid input. Expected 'SET_TASK_DONE <value>', 'GET_STATUS <value>', or 'SET_STATUS <value>'\");\n  }\n}\n\nconst inputText = $('Telegram Callback Trigger').first().json.callback_query.data;\n\nconst parsed = parseInput(inputText);\n\nreturn [{ json: parsed }];"
+        "jsCode": "function parseInput(text) {\n  const input = text.trim();\n  const [kind, ...rest] = input.split(/\\s+/);\n  const command = kind.split(\"<\")[0];\n  const id_value = rest.join(\" \").trim();\n\n  switch (command) {\n    case \"GET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_STATUS\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    case \"SET_TASK_DONE\":\n      if (!id_value) throw new Error(\"Missing ID value\");\n      return { type: kind, id: id_value };\n\n    default:\n      throw new Error(\"Invalid input. Expected 'SET_TASK_DONE <value>', 'GET_STATUS <value>', or 'SET_STATUS <value>'\");\n  }\n}\n\nconst inputText = $('Telegram Trigger').first().json.callback_query.data;\n\nconst parsed = parseInput(inputText);\n\nreturn [{ json: parsed }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        192,
-        928
+        64,
+        896
       ],
       "id": "8dbb2bfa-b2fd-44de-84f7-36e8219d2751",
-      "name": "Parse Callback Query"
+      "name": "Parse Callback Query",
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -755,7 +1720,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        416,
+        288,
         320
       ],
       "id": "dc7f3c43-687a-41ec-b892-5512e15e67c6",
@@ -796,7 +1761,7 @@
       "name": "Send Completion Message",
       "type": "n8n-nodes-base.telegram",
       "position": [
-        864,
+        736,
         -96
       ],
       "webhookId": "5cf134ee-b78d-4603-bb13-a88ff5f42f7b",
@@ -810,12 +1775,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\n\nconst action = ({\n  status: \"GET_STATUS\",\n  update: \"SET_STATUS<\" + $('Parse Slash Command').first().json.new_status + \">\",\n})[$('Parse Slash Command').first().json.command];\n\nif (!action) throw new Error(\"Invalid command\");\n\nconst buttons = items.map((item) => ([\n  {\n    text: item.json.name,\n    callback_data: action + ' ' + String(item.json.id),\n  }\n]));\n\nreturn [{\n  json: {\n    chat_id: $('Telegram Contact Status Trigger').first().json.message.chat.id,\n    text: \"Choose one:\",\n    reply_markup: {\n      inline_keyboard: buttons\n    }\n  }\n}];"
+        "jsCode": "const items = $input.all();\n\nconst action = ({\n  status: \"GET_STATUS\",\n  update: \"SET_STATUS<\" + $('Parse Slash Command').first().json.new_status + \">\",\n})[$('Parse Slash Command').first().json.command];\n\nif (!action) throw new Error(\"Invalid command\");\n\nconst buttons = items.map((item) => ([\n  {\n    text: item.json.name,\n    callback_data: action + ' ' + String(item.json.id),\n  }\n]));\n\nreturn [{\n  json: {\n    chat_id: $('Telegram Trigger').first().json.message.chat.id,\n    text: \"Choose one:\",\n    reply_markup: {\n      inline_keyboard: buttons\n    }\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        864,
+        736,
         128
       ],
       "id": "ae9f6519-bc33-4bea-bbf6-180d5bab25eb",
@@ -847,7 +1812,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        1088,
+        960,
         128
       ],
       "id": "19c27e87-ab99-46bd-8b45-c1760d77355e",
@@ -855,88 +1820,7 @@
     },
     {
       "parameters": {
-        "updates": [
-          "callback_query"
-        ],
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -32,
-        928
-      ],
-      "id": "fb9ae229-bde7-4ed7-a1d6-366995080a92",
-      "name": "Telegram Callback Trigger",
-      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
-      "credentials": {
-        "telegramApi": {
-          "id": "SsOUtBCoIt6hfvPf",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "databasePage",
-        "operation": "update",
-        "pageId": {
-          "__rl": true,
-          "value": "={{ $('Parse Callback Query').item.json.id }}",
-          "mode": "id"
-        },
-        "propertiesUi": {
-          "propertyValues": [
-            {
-              "key": "Status|status",
-              "statusValue": "="
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        880,
-        928
-      ],
-      "id": "ea71d294-32e3-44a3-844c-305dcb783acc",
-      "name": "Update Contact Status2",
-      "credentials": {
-        "notionApi": {
-          "id": "T5TCf8kuWTqoaGFA",
-          "name": "Notion account (Intraverse - Test)"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $json.chat_id  }}",
-        "text": "=*{{ $json.name }}*\n[Notion Page]({{ $json.url }})\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1104,
-        928
-      ],
-      "id": "075f7e7a-fc2e-4af2-b857-a10348894e94",
-      "name": "Send a text message3",
-      "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
-      "credentials": {
-        "telegramApi": {
-          "id": "SsOUtBCoIt6hfvPf",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Contact Status Trigger').item.json.message.chat.id }}",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
         "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
         "additionalFields": {
           "appendAttribution": false
@@ -945,7 +1829,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1088,
+        960,
         512
       ],
       "id": "24a12ab3-bdae-4715-94df-e807a32611c1",
@@ -960,7 +1844,7 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $('Telegram Contact Status Trigger').item.json.message.chat.id }}",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
         "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
         "additionalFields": {
           "appendAttribution": false
@@ -969,7 +1853,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        864,
+        736,
         320
       ],
       "id": "57f1c17a-c776-45df-906e-308aad6b6d5f",
@@ -984,7 +1868,7 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $('Telegram Contact Status Trigger').item.json.message.chat.id }}",
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
         "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
         "additionalFields": {
           "appendAttribution": false
@@ -993,8 +1877,32 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        864,
-        736
+        960,
+        896
+      ],
+      "id": "075f7e7a-fc2e-4af2-b857-a10348894e94",
+      "name": "Send Updated Status1",
+      "webhookId": "0c1eacff-6262-4512-9e08-c6f2bccf09bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "=*{{ $json.name }}*\n\n*Status:* {{ $json.property_status }}\n*Email:* {{ $json.property_email_address }}\n*Telegram:* {{ $json.property_telegram }}\n\n[View in Notion   >]({{ $json.url }})",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        704
       ],
       "id": "6d998fad-9006-43b7-a310-70d01a30c03a",
       "name": "Send Contact Status1",
@@ -1008,16 +1916,74 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\n\nconst command = input.type.split(\"<\")[0];\nconst new_status = input.type.split(\"<\")[1].trim(\">\");\nconst id = input.id;\n\nreturn [\n  {\n    json: {\n      command: command,\n      id: id,\n      new_status: new_status,\n    },\n  },\n];"
+        "jsCode": "const input = $input.first().json;\n\nconst command = input.type.split(\"<\")[0];\nconst new_status = input.type.split(\"<\")[1].replace(/>$/, \"\");\nconst id = input.id;\n\nreturn [\n  {\n    json: {\n      command: command,\n      id: id,\n      new_status: new_status,\n    },\n  },\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        640,
-        928
+        512,
+        896
       ],
       "id": "873085d8-cef0-411c-aeef-5120afb0b64c",
-      "name": "Code in JavaScript1"
+      "name": "Clean Set Status Input"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Parse Callback Query').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "={{ $json.new_status }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        896
+      ],
+      "id": "ea71d294-32e3-44a3-844c-305dcb783acc",
+      "name": "Update Contact Status1",
+      "credentials": {
+        "notionApi": {
+          "id": "T5TCf8kuWTqoaGFA",
+          "name": "Notion account (Intraverse - Test)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        608
+      ],
+      "id": "ce1c962f-ed05-4d74-812d-23853fd3d9f1",
+      "name": "Telegram Trigger",
+      "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1043,6 +2009,6 @@
   },
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2026-03-15T21:57:34.881Z",
-  "versionId": "d8b3fdf1-aa1b-4d38-9e96-cfd1605c8cc4"
+  "updatedAt": "2026-03-15T23:42:25.763Z",
+  "versionId": "029ff667-7268-4ca2-aee3-e3378ab499a8"
 }
