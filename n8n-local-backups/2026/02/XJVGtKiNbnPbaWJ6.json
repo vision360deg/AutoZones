@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-15T23:42:30.000Z",
-    "createdAt": "2026-03-15T23:42:25.764Z",
-    "versionId": "029ff667-7268-4ca2-aee3-e3378ab499a8",
+    "updatedAt": "2026-03-16T00:32:25.000Z",
+    "createdAt": "2026-03-16T00:32:15.049Z",
+    "versionId": "cb846d6b-d743-48c3-9fb3-818aff6b84af",
     "workflowId": "XJVGtKiNbnPbaWJ6",
     "nodes": [
       {
@@ -20,7 +20,7 @@
         "typeVersion": 1.2,
         "position": [
           -160,
-          -96
+          -80
         ],
         "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
         "name": "Schedule Trigger"
@@ -36,8 +36,8 @@
         "name": "Completion Description",
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          634,
-          -316
+          672,
+          -272
         ],
         "typeVersion": 1
       },
@@ -70,7 +70,7 @@
         "typeVersion": 2.3,
         "position": [
           288,
-          -96
+          -80
         ],
         "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
         "name": "If"
@@ -136,7 +136,7 @@
         "typeVersion": 2.2,
         "position": [
           64,
-          -96
+          -80
         ],
         "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
         "name": "Get many database pages - Contacts",
@@ -161,7 +161,7 @@
         "typeVersion": 1.2,
         "position": [
           736,
-          1088
+          1440
         ],
         "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
         "name": "Answer Query a callback",
@@ -258,7 +258,7 @@
         "typeVersion": 3.4,
         "position": [
           288,
-          880
+          1232
         ],
         "id": "8744953d-3844-4991-b218-66a384891424",
         "name": "Switch Callback"
@@ -267,6 +267,31 @@
         "parameters": {
           "rules": {
             "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "fed47304-2d52-419d-a77a-da451cc4b9ce",
+                      "leftValue": "={{ $('Get Contacts').item.json }}",
+                      "rightValue": "true",
+                      "operator": {
+                        "type": "object",
+                        "operation": "empty",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Contact not found"
+              },
               {
                 "conditions": {
                   "options": {
@@ -347,10 +372,11 @@
         "typeVersion": 3.4,
         "position": [
           512,
-          304
+          496
         ],
         "id": "10ef4ecc-a6e2-4266-b292-68e640b0b4ab",
-        "name": "Switch Results"
+        "name": "Switch Results",
+        "alwaysOutputData": false
       },
       {
         "parameters": {
@@ -376,7 +402,7 @@
         "typeVersion": 2.2,
         "position": [
           736,
-          512
+          704
         ],
         "id": "cf44f51a-565f-49e2-98ef-d1db01afbd59",
         "name": "Update Contact Status",
@@ -410,7 +436,7 @@
         "typeVersion": 2.2,
         "position": [
           512,
-          1088
+          1440
         ],
         "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
         "name": "Update Task Done",
@@ -436,7 +462,7 @@
         "typeVersion": 2.2,
         "position": [
           512,
-          704
+          1056
         ],
         "id": "1f9a0b79-5c48-4d93-98de-da1ecfa89556",
         "name": "Get Contact Status",
@@ -455,7 +481,7 @@
         "typeVersion": 2,
         "position": [
           64,
-          320
+          544
         ],
         "id": "b7404c9d-e607-4658-86cf-fcff83e3d7b5",
         "name": "Parse Slash Command",
@@ -469,7 +495,7 @@
         "typeVersion": 2,
         "position": [
           64,
-          896
+          1264
         ],
         "id": "8dbb2bfa-b2fd-44de-84f7-36e8219d2751",
         "name": "Parse Callback Query",
@@ -508,10 +534,11 @@
         "typeVersion": 2.2,
         "position": [
           288,
-          320
+          528
         ],
         "id": "dc7f3c43-687a-41ec-b892-5512e15e67c6",
         "name": "Get Contacts",
+        "alwaysOutputData": true,
         "credentials": {
           "notionApi": {
             "id": "T5TCf8kuWTqoaGFA",
@@ -568,7 +595,7 @@
         "typeVersion": 2,
         "position": [
           736,
-          128
+          368
         ],
         "id": "ae9f6519-bc33-4bea-bbf6-180d5bab25eb",
         "name": "Code in JavaScript"
@@ -600,7 +627,7 @@
         "typeVersion": 4.4,
         "position": [
           960,
-          128
+          368
         ],
         "id": "19c27e87-ab99-46bd-8b45-c1760d77355e",
         "name": "HTTP Request"
@@ -617,7 +644,7 @@
         "typeVersion": 1.2,
         "position": [
           960,
-          512
+          704
         ],
         "id": "24a12ab3-bdae-4715-94df-e807a32611c1",
         "name": "Send Updated Status",
@@ -641,7 +668,7 @@
         "typeVersion": 1.2,
         "position": [
           736,
-          320
+          544
         ],
         "id": "57f1c17a-c776-45df-906e-308aad6b6d5f",
         "name": "Send Contact Status",
@@ -664,8 +691,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1.2,
         "position": [
-          960,
-          896
+          944,
+          1168
         ],
         "id": "075f7e7a-fc2e-4af2-b857-a10348894e94",
         "name": "Send Updated Status1",
@@ -689,7 +716,7 @@
         "typeVersion": 1.2,
         "position": [
           736,
-          704
+          1056
         ],
         "id": "6d998fad-9006-43b7-a310-70d01a30c03a",
         "name": "Send Contact Status1",
@@ -709,7 +736,7 @@
         "typeVersion": 2,
         "position": [
           512,
-          896
+          1248
         ],
         "id": "873085d8-cef0-411c-aeef-5120afb0b64c",
         "name": "Clean Set Status Input"
@@ -737,7 +764,7 @@
         "typeVersion": 2.2,
         "position": [
           736,
-          896
+          1248
         ],
         "id": "ea71d294-32e3-44a3-844c-305dcb783acc",
         "name": "Update Contact Status1",
@@ -746,7 +773,8 @@
             "id": "T5TCf8kuWTqoaGFA",
             "name": "Notion account (Intraverse - Test)"
           }
-        }
+        },
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -760,11 +788,116 @@
         "typeVersion": 1.2,
         "position": [
           -160,
-          608
+          896
         ],
         "id": "ce1c962f-ed05-4d74-812d-23853fd3d9f1",
         "name": "Telegram Trigger",
         "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "2bfc1f68-5282-4499-b334-c6dd8b17b0c2",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "Invalid command format",
+                "operator": {
+                  "type": "string",
+                  "operation": "contains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          288,
+          832
+        ],
+        "id": "fb692b54-1057-4a67-a0b3-563e47ba8608",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "=Contact *{{ $('Parse Slash Command').item.json.contact_name }}* not found",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          736,
+          192
+        ],
+        "id": "d40ef24a-f6e7-43e8-ab99-da102ae7b770",
+        "name": "Send Contact Not Found",
+        "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "*Bad format*. Please use either:\n- `/status Contact`\n- `/update Contact NewStatus`",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          512,
+          816
+        ],
+        "id": "1952a145-6ddf-41e1-91ef-4901e993570f",
+        "name": "Send a text message",
+        "webhookId": "24c0f32e-69ed-49ae-8816-8075069be54d",
+        "credentials": {
+          "telegramApi": {
+            "id": "SsOUtBCoIt6hfvPf",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+          "text": "=The status \"{{ $json.new_status }}\" does not exist.",
+          "additionalFields": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          944,
+          1344
+        ],
+        "id": "d1dba26f-9e8c-4166-8c61-1ea8dc6a68bf",
+        "name": "Send a text message1",
+        "webhookId": "20e4d747-194b-4b38-8aba-cb92482c61a7",
         "credentials": {
           "telegramApi": {
             "id": "SsOUtBCoIt6hfvPf",
@@ -847,6 +980,13 @@
         "main": [
           [
             {
+              "node": "Send Contact Not Found",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
               "node": "Code in JavaScript",
               "type": "main",
               "index": 0
@@ -884,6 +1024,13 @@
           [
             {
               "node": "Get Contacts",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "If1",
               "type": "main",
               "index": 0
             }
@@ -969,6 +1116,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Send a text message1",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -987,14 +1141,30 @@
             }
           ]
         ]
+      },
+      "Send Contact Status": {
+        "main": [
+          []
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Send a text message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Bob Marley",
-    "name": "Version 029ff667",
+    "name": "Version cb846d6b",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "029ff667-7268-4ca2-aee3-e3378ab499a8",
+  "activeVersionId": "cb846d6b-d743-48c3-9fb3-818aff6b84af",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -1069,6 +1239,13 @@
       "main": [
         [
           {
+            "node": "Send Contact Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "Code in JavaScript",
             "type": "main",
             "index": 0
@@ -1106,6 +1283,13 @@
         [
           {
             "node": "Get Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -1191,6 +1375,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -1209,6 +1400,22 @@
           }
         ]
       ]
+    },
+    "Send Contact Status": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-02-12T20:43:51.343Z",
@@ -1217,7 +1424,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Notion to Telegram",
+  "name": "Notion-Telegram",
   "nodes": [
     {
       "parameters": {
@@ -1233,7 +1440,7 @@
       "typeVersion": 1.2,
       "position": [
         -160,
-        -96
+        -80
       ],
       "id": "a3a0239f-ea37-4040-b00f-63ee13e3b3c2",
       "name": "Schedule Trigger"
@@ -1249,8 +1456,8 @@
       "name": "Completion Description",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        634,
-        -316
+        672,
+        -272
       ],
       "typeVersion": 1
     },
@@ -1283,7 +1490,7 @@
       "typeVersion": 2.3,
       "position": [
         288,
-        -96
+        -80
       ],
       "id": "9a9acd9e-c733-4c87-af79-18ac200c6f2c",
       "name": "If"
@@ -1349,7 +1556,7 @@
       "typeVersion": 2.2,
       "position": [
         64,
-        -96
+        -80
       ],
       "id": "68b3dcb5-cd6c-46ad-a011-e040eb8c505a",
       "name": "Get many database pages - Contacts",
@@ -1374,7 +1581,7 @@
       "typeVersion": 1.2,
       "position": [
         736,
-        1088
+        1440
       ],
       "id": "4e80db0a-181c-44e2-8bc3-488f67c750e3",
       "name": "Answer Query a callback",
@@ -1471,7 +1678,7 @@
       "typeVersion": 3.4,
       "position": [
         288,
-        880
+        1232
       ],
       "id": "8744953d-3844-4991-b218-66a384891424",
       "name": "Switch Callback"
@@ -1480,6 +1687,31 @@
       "parameters": {
         "rules": {
           "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fed47304-2d52-419d-a77a-da451cc4b9ce",
+                    "leftValue": "={{ $('Get Contacts').item.json }}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Contact not found"
+            },
             {
               "conditions": {
                 "options": {
@@ -1560,10 +1792,11 @@
       "typeVersion": 3.4,
       "position": [
         512,
-        304
+        496
       ],
       "id": "10ef4ecc-a6e2-4266-b292-68e640b0b4ab",
-      "name": "Switch Results"
+      "name": "Switch Results",
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -1589,7 +1822,7 @@
       "typeVersion": 2.2,
       "position": [
         736,
-        512
+        704
       ],
       "id": "cf44f51a-565f-49e2-98ef-d1db01afbd59",
       "name": "Update Contact Status",
@@ -1623,7 +1856,7 @@
       "typeVersion": 2.2,
       "position": [
         512,
-        1088
+        1440
       ],
       "id": "cc9ccc97-f2f8-4d2d-ada5-8165d14841e1",
       "name": "Update Task Done",
@@ -1649,7 +1882,7 @@
       "typeVersion": 2.2,
       "position": [
         512,
-        704
+        1056
       ],
       "id": "1f9a0b79-5c48-4d93-98de-da1ecfa89556",
       "name": "Get Contact Status",
@@ -1668,7 +1901,7 @@
       "typeVersion": 2,
       "position": [
         64,
-        320
+        544
       ],
       "id": "b7404c9d-e607-4658-86cf-fcff83e3d7b5",
       "name": "Parse Slash Command",
@@ -1682,7 +1915,7 @@
       "typeVersion": 2,
       "position": [
         64,
-        896
+        1264
       ],
       "id": "8dbb2bfa-b2fd-44de-84f7-36e8219d2751",
       "name": "Parse Callback Query",
@@ -1721,10 +1954,11 @@
       "typeVersion": 2.2,
       "position": [
         288,
-        320
+        528
       ],
       "id": "dc7f3c43-687a-41ec-b892-5512e15e67c6",
       "name": "Get Contacts",
+      "alwaysOutputData": true,
       "credentials": {
         "notionApi": {
           "id": "T5TCf8kuWTqoaGFA",
@@ -1781,7 +2015,7 @@
       "typeVersion": 2,
       "position": [
         736,
-        128
+        368
       ],
       "id": "ae9f6519-bc33-4bea-bbf6-180d5bab25eb",
       "name": "Code in JavaScript"
@@ -1813,7 +2047,7 @@
       "typeVersion": 4.4,
       "position": [
         960,
-        128
+        368
       ],
       "id": "19c27e87-ab99-46bd-8b45-c1760d77355e",
       "name": "HTTP Request"
@@ -1830,7 +2064,7 @@
       "typeVersion": 1.2,
       "position": [
         960,
-        512
+        704
       ],
       "id": "24a12ab3-bdae-4715-94df-e807a32611c1",
       "name": "Send Updated Status",
@@ -1854,7 +2088,7 @@
       "typeVersion": 1.2,
       "position": [
         736,
-        320
+        544
       ],
       "id": "57f1c17a-c776-45df-906e-308aad6b6d5f",
       "name": "Send Contact Status",
@@ -1877,8 +2111,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        960,
-        896
+        944,
+        1168
       ],
       "id": "075f7e7a-fc2e-4af2-b857-a10348894e94",
       "name": "Send Updated Status1",
@@ -1902,7 +2136,7 @@
       "typeVersion": 1.2,
       "position": [
         736,
-        704
+        1056
       ],
       "id": "6d998fad-9006-43b7-a310-70d01a30c03a",
       "name": "Send Contact Status1",
@@ -1922,7 +2156,7 @@
       "typeVersion": 2,
       "position": [
         512,
-        896
+        1248
       ],
       "id": "873085d8-cef0-411c-aeef-5120afb0b64c",
       "name": "Clean Set Status Input"
@@ -1950,7 +2184,7 @@
       "typeVersion": 2.2,
       "position": [
         736,
-        896
+        1248
       ],
       "id": "ea71d294-32e3-44a3-844c-305dcb783acc",
       "name": "Update Contact Status1",
@@ -1959,7 +2193,8 @@
           "id": "T5TCf8kuWTqoaGFA",
           "name": "Notion account (Intraverse - Test)"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -1973,11 +2208,116 @@
       "typeVersion": 1.2,
       "position": [
         -160,
-        608
+        896
       ],
       "id": "ce1c962f-ed05-4d74-812d-23853fd3d9f1",
       "name": "Telegram Trigger",
       "webhookId": "ee240767-9eef-435a-abd3-3312baf528a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2bfc1f68-5282-4499-b334-c6dd8b17b0c2",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "Invalid command format",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        832
+      ],
+      "id": "fb692b54-1057-4a67-a0b3-563e47ba8608",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Contact *{{ $('Parse Slash Command').item.json.contact_name }}* not found",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        192
+      ],
+      "id": "d40ef24a-f6e7-43e8-ab99-da102ae7b770",
+      "name": "Send Contact Not Found",
+      "webhookId": "e1cdc17c-c34a-433e-a4c1-a00ff467ccf5",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "*Bad format*. Please use either:\n- `/status Contact`\n- `/update Contact NewStatus`",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        816
+      ],
+      "id": "1952a145-6ddf-41e1-91ef-4901e993570f",
+      "name": "Send a text message",
+      "webhookId": "24c0f32e-69ed-49ae-8816-8075069be54d",
+      "credentials": {
+        "telegramApi": {
+          "id": "SsOUtBCoIt6hfvPf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "=The status \"{{ $json.new_status }}\" does not exist.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        1344
+      ],
+      "id": "d1dba26f-9e8c-4166-8c61-1ea8dc6a68bf",
+      "name": "Send a text message1",
+      "webhookId": "20e4d747-194b-4b38-8aba-cb92482c61a7",
       "credentials": {
         "telegramApi": {
           "id": "SsOUtBCoIt6hfvPf",
@@ -2009,6 +2349,6 @@
   },
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2026-03-15T23:42:25.763Z",
-  "versionId": "029ff667-7268-4ca2-aee3-e3378ab499a8"
+  "updatedAt": "2026-03-16T00:32:15.048Z",
+  "versionId": "cb846d6b-d743-48c3-9fb3-818aff6b84af"
 }
