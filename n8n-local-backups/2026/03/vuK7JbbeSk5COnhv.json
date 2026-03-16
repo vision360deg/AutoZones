@@ -266,6 +266,7 @@
       ],
       "id": "6111af50-4ff7-4225-9225-8900df446023",
       "name": "Get Contacts",
+      "alwaysOutputData": true,
       "credentials": {
         "notionApi": {
           "id": "T5TCf8kuWTqoaGFA",
@@ -411,6 +412,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-03-15T22:16:49.749Z",
-  "versionId": "ce103c48-98ed-4923-9824-4cf4412d20e7"
+  "updatedAt": "2026-03-15T23:51:22.987Z",
+  "versionId": "aa2da6de-ff67-4356-a0ff-88e5d69c949d"
 }
